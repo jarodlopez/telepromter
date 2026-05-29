@@ -205,7 +205,7 @@ ${isLongTrack ? `✅ CURP Validada: ${callData.curpValidada ? 'Sí' : 'Pendiente
           <div className="bg-indigo-900 p-8 text-white flex items-center gap-4">
             <Settings className="w-8 h-8 text-indigo-400" />
             <div>
-              <h1 className="text-3xl font-bold tracking-tight">Teleprompter Elite</h1>
+              <h1 className="text-3xl font-bold tracking-tight">MultiMoney Teleprompter </h1>
               <p className="text-indigo-300 text-sm mt-1">
                 Preparación de Llamada — Script Mayo 2026 | MultiMoney MX
               </p>
@@ -765,7 +765,7 @@ ${isLongTrack ? `✅ CURP Validada: ${callData.curpValidada ? 'Sí' : 'Pendiente
       {/* NAV LATERAL IZQUIERDA */}
       <div className="w-64 bg-slate-900 text-slate-300 flex-col shadow-2xl z-20 hidden lg:flex border-r border-slate-800">
         <div className="p-6 border-b border-slate-800 bg-slate-950">
-          <h1 className="font-black text-white text-xl tracking-tight">Teleprompter Elite</h1>
+          <h1 className="font-black text-white text-xl tracking-tight">MultiMoney Teleprompter</h1>
           <p className="text-indigo-400 text-xs font-bold tracking-widest uppercase mt-1">Mayo 2026</p>
         </div>
 
