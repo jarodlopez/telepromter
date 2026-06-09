@@ -160,11 +160,21 @@ export function Transcriptor() {
   const startClientCapture = async () => {
     setClientError(null);
     try {
-      // Request tab/system audio via getDisplayMedia
-      const stream = await (navigator.mediaDevices as any).getDisplayMedia({
-        audio: true,
-        video: false,
-      });
+      // Chrome requires video in the constraints for getDisplayMedia — try audio-only first,
+      // fall back to minimal video which we immediately discard.
+      let stream: MediaStream;
+      try {
+        stream = await (navigator.mediaDevices as any).getDisplayMedia({ audio: true, video: false });
+      } catch (firstErr: any) {
+        if (firstErr.name === 'NotSupportedError' || firstErr.name === 'TypeError') {
+          stream = await (navigator.mediaDevices as any).getDisplayMedia({
+            audio: true,
+            video: { width: 1, height: 1 },
+          });
+        } else {
+          throw firstErr;
+        }
+      }
 
       // Stop any video tracks Chrome may have added
       stream.getVideoTracks().forEach((t: MediaStreamTrack) => t.stop());
