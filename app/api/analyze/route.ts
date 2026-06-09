@@ -114,6 +114,20 @@ NO penalizar por:
 
 Evalúa únicamente las acciones que razonablemente podían ejecutarse antes de la terminación del proceso.
 
+## REGLA DE REFERENCIAS, DOCUMENTOS Y HANDOFF
+
+Las referencias familiares y de amistad, la carga de documentos (INE, selfie, comprobante), el OTP, la firma y el handoff con Riesgo son requisitos de la etapa de ORIGINACIÓN.
+
+NO los evalúes ni los menciones como incumplimiento si la llamada NO llegó a la etapa de originación.
+
+Una llamada llega a originación ÚNICAMENTE si el cliente aceptó explícitamente continuar con el proceso y se inició la carga de documentos o se generó el link/OTP.
+
+Si la llamada terminó en seguimiento programado, cliente pensándolo, o sistema rechazado ANTES de originación:
+* NO marcar como oportunidad de mejora la falta de referencias.
+* NO marcar como riesgo la falta de referencias.
+* NO mencionar la falta de documentos como incumplimiento.
+* Evaluar únicamente el proceso de venta hasta el punto donde terminó.
+
 # ENFOQUE DE AUDITORÍA
 
 ## Apertura
@@ -141,15 +155,21 @@ Detecta si el asesor:
 * Construye sobre lo que dice el cliente.
 
 ## Empatía
-Especial atención cuando el cliente mencione:
-* Enfermedades.
-* Fallecimientos.
-* Problemas familiares.
-* Estrés financiero.
-* Desempleo.
+
+Calibra el nivel de empatía requerido según el contexto emocional real de la llamada.
+
+Contexto de alta carga emocional (enfermedad, fallecimiento, desempleo, crisis familiar):
+* Aquí la empatía tiene máximo peso. Ausencia o respuesta mecánica es una falla grave.
+
+Contexto de carga emocional media (estrés financiero, frustración con deudas, preocupación por el monto):
+* El asesor debe validar la situación antes de continuar. Un "entiendo tu situación" sincero es Adecuada.
+
+Contexto sin carga emocional relevante (conversación puramente comercial, cliente neutral):
+* No penalices la empatía por falta de expresiones emocionales del cliente. Si el asesor mantiene un trato cordial y personalizado, califica como Adecuada.
 
 Clasifica: Excelente / Adecuada / Insuficiente / Ausente.
-La empatía tiene un peso importante en la evaluación.
+
+REGLA: Si el cliente NO comparte una situación emocional grave, el nivel de referencia es Adecuada. Para calificar como Insuficiente debe haber un momento claro donde el asesor debió validar emocionalmente y no lo hizo.
 
 ## Presentación de Oferta
 Evalúa:
@@ -162,10 +182,21 @@ No penalices porque el monto aprobado sea inferior al solicitado.
 Evalúa únicamente cómo el asesor defendió la oferta.
 
 ## Manejo de Objeciones
-Una objeción existe cuando el cliente expresa duda, resistencia, inconformidad, comparación o incertidumbre.
-Detecta automáticamente las objeciones.
-Evalúa: Reconocimiento, Empatía, Argumentación, Resolución.
-No afirmes que no hubo objeciones si el cliente expresó resistencia o inconformidad.
+
+Una objeción existe cuando el cliente expresa duda, resistencia, preocupación, inconformidad, comparación o incertidumbre — independientemente de si usa la palabra "objeción".
+
+Detecta automáticamente todas las objeciones presentes en la transcripción.
+
+Si el asesor responde intentando justificar la oferta, resolver la preocupación o dar argumentos, ESO ES manejo de objeción, aunque no logre superarla completamente.
+
+Clasifica cada objeción manejada en una de estas categorías:
+* Exitoso — el cliente quedó convencido o avanzó.
+* Parcial — el asesor respondió con argumentos pero el cliente mantuvo la duda.
+* Deficiente — el asesor ignoró o respondió de forma inadecuada.
+
+NUNCA clasifiques como "no hubo manejo de objeciones" si el cliente expresó resistencia y el asesor intentó responder, aunque no haya cerrado. En ese caso es Parcial o Deficiente, no ausente.
+
+Evalúa el conjunto de objeciones y asigna una calificación global a la categoría.
 
 ## Cierre
 Evalúa únicamente si el asesor avanzó correctamente al siguiente paso disponible.
@@ -226,7 +257,7 @@ Responde ÚNICAMENTE con JSON válido, sin markdown ni texto extra:
     "escuchaActiva":      { "calificacion": <0-10>, "hallazgos": "<texto con evidencia>" },
     "empatia":            { "calificacion": <0-10>, "nivel": "<Excelente|Adecuada|Insuficiente|Ausente>", "hallazgos": "<texto con evidencia>" },
     "presentacionOferta": { "calificacion": <0-10>, "hallazgos": "<texto con evidencia>" },
-    "manejoObjeciones":   { "calificacion": <0-10>, "hallazgos": "<texto con evidencia>" },
+    "manejoObjeciones":   { "calificacion": <0-10>, "hallazgos": "<lista de objeciones detectadas con clasificación Exitoso/Parcial/Deficiente y evidencia>" },
     "cierre":             { "calificacion": <0-10>, "hallazgos": "<texto con evidencia>" }
   },
   "riesgosDetectados": ["<riesgo con evidencia>"],
