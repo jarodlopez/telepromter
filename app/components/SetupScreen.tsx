@@ -2,6 +2,7 @@
 import React from 'react';
 import { Phone, User, Target, FileText, Settings } from 'lucide-react';
 import { useTeleprompterStore } from '@/lib/store';
+import { QuickAnalysis } from '@/app/components/QuickAnalysis';
 
 export function SetupScreen() {
   const { crmData, setCrmData, setAppState, resetCallDuration, showToast } = useTeleprompterStore();
@@ -25,7 +26,7 @@ export function SetupScreen() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4 font-sans">
+    <div className="min-h-screen bg-slate-900 flex flex-col items-center justify-center p-4 font-sans">
       <div className="bg-white max-w-4xl w-full rounded-2xl shadow-2xl overflow-hidden">
         <div className="bg-indigo-900 p-8 text-white flex items-center gap-4">
           <Settings className="w-8 h-8 text-indigo-400" />
@@ -199,6 +200,7 @@ export function SetupScreen() {
           </button>
         </div>
       </div>
+      <QuickAnalysis />
     </div>
   );
 }
