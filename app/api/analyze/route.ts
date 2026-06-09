@@ -7,15 +7,39 @@ function formatTime(s: number): string {
   return `${m}:${sec}`;
 }
 
-export async function POST(req: NextRequest) {
-  if (!process.env.OPENAI_API_KEY) {
-    return NextResponse.json(
-      { error: 'OPENAI_API_KEY no configurada. Agrégala en .env.local o en las variables de entorno de Vercel.' },
-      { status: 500 }
-    );
-  }
+function mockAnalysis(crmData: any, callData: any, callDuration: number) {
+  const tieneRefs = callData.refFamiliar && callData.refAmistad;
+  const objecionesSuficientes = callData.objecionesRebatidas >= 3;
+  const duracionOk = callDuration >= 180;
+  const puntuacion = 5 + (tieneRefs ? 2 : 0) + (objecionesSuficientes ? 1 : 0) + (duracionOk ? 1 : 0) + (callData.motivo ? 1 : 0);
 
+  return {
+    _demo: true,
+    resumen: `Llamada de ${formatTime(callDuration)} con ${crmData.cliente || 'el cliente'} (lead ${crmData.tipoLead.toUpperCase()}). ${tieneRefs ? 'Se obtuvieron las 2 referencias requeridas.' : 'No se completaron las referencias obligatorias.'} Este es un análisis de demostración — agrega OPENAI_API_KEY para análisis real.`,
+    puntosFuertes: [
+      crmData.monto ? `Oferta concreta presentada: $${crmData.monto} a ${crmData.tasa}` : 'Datos de oferta registrados en el sistema',
+      callData.motivo ? `Motivo del crédito identificado: ${callData.motivo}` : 'Flujo de llamada completado con el teleprompter',
+      duracionOk ? `Duración adecuada de ${formatTime(callDuration)} para una llamada de ventas` : 'Uso correcto del script estructurado',
+    ],
+    areasMejora: [
+      !tieneRefs ? 'Referencias telefónicas incompletas — son OBLIGATORIAS para Riesgo, no se puede cerrar sin ellas' : 'Mantener el hábito de pedir referencias al inicio del cierre, no al final',
+      !objecionesSuficientes ? `Solo ${callData.objecionesRebatidas}/3 objeciones registradas — el playbook exige mínimo 3 para calidad` : 'Continuar aplicando el framework REA completo en cada objeción',
+      !callData.fechaSeguimiento ? 'No se agendó seguimiento — toda llamada debe cerrar con una fecha concreta, incluso si no hubo conversión' : 'Confirmar el seguimiento por WhatsApp inmediatamente después de colgar',
+    ],
+    recomendacion: callData.fechaSeguimiento
+      ? `Contactar el ${callData.fechaSeguimiento}. Preparar argumentos adicionales sobre ${callData.motivo || 'el destino del crédito'} y confirmar disponibilidad de documentos.`
+      : `Agendar seguimiento de inmediato. El cliente mostró interés en $${crmData.monto || 'el monto aprobado'} — llamar en menos de 24 horas para no perder el momentum.`,
+    puntuacion: Math.min(10, Math.max(1, puntuacion)),
+  };
+}
+
+export async function POST(req: NextRequest) {
   const { transcript, crmData, callData, callDuration } = await req.json();
+
+  if (!process.env.OPENAI_API_KEY) {
+    await new Promise((r) => setTimeout(r, 900)); // simulate latency so demo feels real
+    return NextResponse.json(mockAnalysis(crmData, callData, callDuration));
+  }
 
   const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 

@@ -17,6 +17,7 @@ export function PostCallAnalysis() {
 
   if (!analysis) return null;
 
+  const isDemo = (analysis as any)._demo === true;
   const scoreColor =
     analysis.puntuacion >= 8
       ? 'text-emerald-600'
@@ -26,6 +27,16 @@ export function PostCallAnalysis() {
 
   return (
     <div className="mt-6 space-y-4 animate-fade-in">
+      {isDemo && (
+        <div className="bg-amber-50 border border-amber-300 rounded-xl p-3 flex gap-2 items-start">
+          <span className="text-amber-500 text-base flex-shrink-0">⚠️</span>
+          <p className="text-xs text-amber-800 leading-relaxed">
+            <strong>Modo demo</strong> — análisis generado automáticamente con los datos de la llamada.
+            Agrega <code className="bg-amber-100 px-1 rounded">OPENAI_API_KEY</code> en{' '}
+            <code className="bg-amber-100 px-1 rounded">.env.local</code> para análisis real con IA.
+          </p>
+        </div>
+      )}
       <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-4 flex items-start justify-between gap-4">
         <div className="flex-1">
           <p className="text-xs font-bold text-indigo-600 uppercase tracking-widest mb-1">
