@@ -1,30 +1,93 @@
 'use client';
 
-import React, { useState } from 'react';
-import { ArrowLeft, Sparkles, Loader2, ClipboardPaste, User, Target } from 'lucide-react';
+import React, { useState, useCallback } from 'react';
+import { ArrowLeft, Sparkles, Loader2, ClipboardPaste, User, Target, CheckCircle2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useTeleprompterStore } from '@/lib/store';
 import { PostCallAnalysis } from '@/app/components/PostCallAnalysis';
 import { Toast } from '@/app/components/ui/Toast';
+
+// ─── HubSpot transcript parser ────────────────────────────────────────────────
+// Format:
+//   ## HubSpot\n- Advisor Name       → asesor
+//   ## Contacto\n- CLIENT NAME       → cliente
+//   **SPEAKER** (m:ss): text         → conversation lines
+function parseHubSpot(raw: string): {
+  asesor: string;
+  cliente: string;
+  cleanTranscript: string;
+  isHubSpot: boolean;
+} {
+  const asesorMatch = raw.match(/##\s*HubSpot\s*\n-\s*(.+)/i);
+  const clienteMatch = raw.match(/##\s*Contacto\s*\n-\s*(.+)/i);
+
+  const asesor = asesorMatch?.[1]?.trim() ?? '';
+  const cliente = clienteMatch?.[1]?.trim() ?? '';
+  const isHubSpot = !!(asesor || cliente);
+
+  if (!isHubSpot) {
+    return { asesor, cliente, cleanTranscript: raw, isHubSpot: false };
+  }
+
+  const transcriptStart = raw.indexOf('# Transcripción');
+  const body = transcriptStart >= 0 ? raw.slice(transcriptStart) : raw;
+
+  const lines = body
+    .split('\n')
+    .map((line) => {
+      // Match **SPEAKER NAME** (m:ss): spoken text
+      const m = line.match(/^\*\*(.+?)\*\*\s*\(\d+:\d+\):\s*(.+)/);
+      if (!m) return null;
+      const [, speaker, text] = m;
+      const norm = speaker.trim().toLowerCase();
+      if (asesor && norm === asesor.toLowerCase()) return `Asesor: ${text.trim()}`;
+      if (cliente && norm === cliente.toLowerCase()) return `Cliente: ${text.trim()}`;
+      return `${speaker.trim()}: ${text.trim()}`;
+    })
+    .filter(Boolean) as string[];
+
+  return { asesor, cliente, cleanTranscript: lines.join('\n'), isHubSpot: true };
+}
+// ─────────────────────────────────────────────────────────────────────────────
 
 export default function AnalyzePage() {
   const router = useRouter();
   const { crmData, setCrmData, setAnalysis, isAnalyzing, setIsAnalyzing, showToast } =
     useTeleprompterStore();
 
-  const [transcript, setTranscript] = useState('');
+  const [rawTranscript, setRawTranscript] = useState('');
+  const [cleanTranscript, setCleanTranscript] = useState('');
   const [localCliente, setLocalCliente] = useState(crmData.cliente);
   const [localAsesor, setLocalAsesor] = useState(crmData.asesor);
   const [localTipo, setLocalTipo] = useState<typeof crmData.tipoLead>(crmData.tipoLead);
+  const [hubSpotDetected, setHubSpotDetected] = useState(false);
 
-  const wordCount = transcript.trim() ? transcript.trim().split(/\s+/).length : 0;
+  const wordCount = cleanTranscript.trim() ? cleanTranscript.trim().split(/\s+/).length : 0;
+
+  const handleTranscriptChange = useCallback(
+    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      const value = e.target.value;
+      setRawTranscript(value);
+
+      const parsed = parseHubSpot(value);
+      setCleanTranscript(parsed.cleanTranscript);
+      setHubSpotDetected(parsed.isHubSpot);
+
+      if (parsed.isHubSpot) {
+        if (parsed.asesor) setLocalAsesor(parsed.asesor);
+        if (parsed.cliente) setLocalCliente(parsed.cliente);
+      }
+    },
+    []
+  );
 
   const analyze = async () => {
-    if (!transcript.trim()) {
+    if (!cleanTranscript.trim()) {
       showToast('Pega la transcripción antes de analizar.', 'error');
       return;
     }
-    setCrmData({ cliente: localCliente, asesor: localAsesor, tipoLead: localTipo });
+    const merged = { ...crmData, cliente: localCliente, asesor: localAsesor, tipoLead: localTipo };
+    setCrmData(merged);
     setIsAnalyzing(true);
     setAnalysis(null);
 
@@ -33,8 +96,8 @@ export default function AnalyzePage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          transcript,
-          crmData: { ...crmData, cliente: localCliente, asesor: localAsesor, tipoLead: localTipo },
+          transcript: cleanTranscript,
+          crmData: merged,
           callData: {
             motivo: '', refFamiliar: '', refAmistad: '',
             fechaSeguimiento: '', objecionesRebatidas: 0, curpValidada: false,
@@ -69,7 +132,7 @@ export default function AnalyzePage() {
       </div>
 
       <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
-        {/* Context */}
+        {/* Context fields — auto-filled when HubSpot format is detected */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
             <label className="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-1">
@@ -78,7 +141,7 @@ export default function AnalyzePage() {
             <input
               value={localCliente}
               onChange={(e) => setLocalCliente(e.target.value)}
-              placeholder="Nombre del cliente"
+              placeholder="Se detecta automáticamente"
               className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
@@ -89,7 +152,7 @@ export default function AnalyzePage() {
             <input
               value={localAsesor}
               onChange={(e) => setLocalAsesor(e.target.value)}
-              placeholder="Tu nombre"
+              placeholder="Se detecta automáticamente"
               className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
@@ -112,23 +175,46 @@ export default function AnalyzePage() {
 
         {/* Transcript input */}
         <div className="bg-slate-800 rounded-2xl p-5 space-y-3">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between flex-wrap gap-2">
             <p className="text-sm font-bold text-white flex items-center gap-2">
               <ClipboardPaste className="w-4 h-4 text-indigo-400" />
               Transcripción de HubSpot
             </p>
-            {wordCount > 0 && <span className="text-xs text-slate-400">{wordCount} palabras</span>}
+            <div className="flex items-center gap-3">
+              {hubSpotDetected && (
+                <span className="flex items-center gap-1 text-xs font-bold text-emerald-400">
+                  <CheckCircle2 className="w-3.5 h-3.5" /> Formato HubSpot detectado
+                </span>
+              )}
+              {wordCount > 0 && (
+                <span className="text-xs text-slate-400">{wordCount} palabras</span>
+              )}
+            </div>
           </div>
+
           <textarea
-            value={transcript}
-            onChange={(e) => setTranscript(e.target.value)}
-            placeholder="Pega aquí la transcripción generada por HubSpot..."
+            value={rawTranscript}
+            onChange={handleTranscriptChange}
+            placeholder="Pega aquí la transcripción de HubSpot. Los nombres del asesor y cliente se detectan automáticamente."
             rows={12}
             className="w-full bg-slate-900 border border-slate-700 rounded-xl p-4 text-sm text-slate-200 font-mono leading-relaxed resize-y focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder:text-slate-600"
           />
+
+          {/* Preview of cleaned transcript */}
+          {hubSpotDetected && cleanTranscript && (
+            <details className="group">
+              <summary className="text-xs text-slate-400 cursor-pointer hover:text-slate-300 select-none">
+                Vista previa del texto enviado a GPT ▾
+              </summary>
+              <pre className="mt-2 bg-slate-900 border border-slate-700 rounded-lg p-3 text-xs text-slate-400 leading-5 max-h-48 overflow-y-auto whitespace-pre-wrap">
+                {cleanTranscript.slice(0, 1500)}{cleanTranscript.length > 1500 ? '\n…' : ''}
+              </pre>
+            </details>
+          )}
+
           <button
             onClick={analyze}
-            disabled={isAnalyzing || !transcript.trim()}
+            disabled={isAnalyzing || !cleanTranscript.trim()}
             className="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-xl py-3 transition"
           >
             {isAnalyzing ? (
@@ -139,7 +225,7 @@ export default function AnalyzePage() {
           </button>
         </div>
 
-        {/* Results rendered via PostCallAnalysis — uses Zustand store */}
+        {/* Results */}
         <div className="[&_.mt-6]:mt-0">
           <PostCallAnalysis />
         </div>

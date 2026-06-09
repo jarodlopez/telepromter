@@ -223,7 +223,11 @@ ${crmData.tipoLead === 'longtrack' ? `- CURP validada: ${callData.curpValidada ?
 - Seguimiento agendado: ${callData.fechaSeguimiento || '❌ No agendado'}
 
 TRANSCRIPCIÓN DE LA LLAMADA:
-${transcript?.trim() || '(Sin transcripción — evalúa únicamente con los datos del registro)'}`;
+${
+  transcript?.trim()
+    ? `(Asesor = ${crmData.asesor || 'el asesor de MultiMoney'} | Cliente = ${crmData.cliente || 'el cliente'})\n\n${transcript.trim()}`
+    : '(Sin transcripción — evalúa únicamente con los datos del registro)'
+}`;
 
   try {
     const completion = await openai.chat.completions.create({
