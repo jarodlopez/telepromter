@@ -1,11 +1,12 @@
 'use client';
 import React from 'react';
-import { Phone, User, Target, FileText, Settings } from 'lucide-react';
+import { Phone, User, Target, FileText, Settings, Sparkles } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useTeleprompterStore } from '@/lib/store';
-import { QuickAnalysis } from '@/app/components/QuickAnalysis';
 
 export function SetupScreen() {
   const { crmData, setCrmData, setAppState, resetCallDuration, showToast } = useTeleprompterStore();
+  const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -26,7 +27,7 @@ export function SetupScreen() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 flex flex-col items-center justify-center p-4 font-sans">
+    <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4 font-sans">
       <div className="bg-white max-w-4xl w-full rounded-2xl shadow-2xl overflow-hidden">
         <div className="bg-indigo-900 p-8 text-white flex items-center gap-4">
           <Settings className="w-8 h-8 text-indigo-400" />
@@ -192,15 +193,26 @@ export function SetupScreen() {
             </div>
           </div>
 
-          <button
-            onClick={iniciarLlamada}
-            className="btn-primary w-full flex justify-center items-center gap-2 text-lg py-4 mt-8"
-          >
-            <Phone className="w-5 h-5" /> Iniciar Teleprompter
-          </button>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
+            <button
+              onClick={iniciarLlamada}
+              className="flex flex-col items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl py-6 px-4 transition shadow-md"
+            >
+              <Phone className="w-7 h-7" />
+              <span className="text-base">Iniciar Llamada</span>
+              <span className="text-xs text-indigo-300 font-normal">Script + Teleprompter en vivo</span>
+            </button>
+            <button
+              onClick={() => router.push('/analyze')}
+              className="flex flex-col items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl py-6 px-4 transition shadow-md"
+            >
+              <Sparkles className="w-7 h-7 text-indigo-400" />
+              <span className="text-base">Analizar Transcripción</span>
+              <span className="text-xs text-slate-400 font-normal">Coaching IA con transcripción de HubSpot</span>
+            </button>
+          </div>
         </div>
       </div>
-      <QuickAnalysis />
     </div>
   );
 }
