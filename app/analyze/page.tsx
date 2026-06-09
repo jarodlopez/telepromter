@@ -1,50 +1,15 @@
 'use client';
 
 import React, { useState } from 'react';
-import {
-  ArrowLeft,
-  Sparkles,
-  Loader2,
-  ClipboardPaste,
-  User,
-  Target,
-  TrendingUp,
-  TrendingDown,
-  ArrowRight,
-} from 'lucide-react';
+import { ArrowLeft, Sparkles, Loader2, ClipboardPaste, User, Target } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useTeleprompterStore } from '@/lib/store';
+import { PostCallAnalysis } from '@/app/components/PostCallAnalysis';
 import { Toast } from '@/app/components/ui/Toast';
-
-function ScoreRing({ score }: { score: number }) {
-  const color = score >= 8 ? '#10b981' : score >= 6 ? '#f59e0b' : '#ef4444';
-  return (
-    <div className="flex flex-col items-center justify-center">
-      <svg width="96" height="96" viewBox="0 0 96 96">
-        <circle cx="48" cy="48" r="40" fill="none" stroke="#e2e8f0" strokeWidth="8" />
-        <circle
-          cx="48"
-          cy="48"
-          r="40"
-          fill="none"
-          stroke={color}
-          strokeWidth="8"
-          strokeDasharray={`${(score / 10) * 251.2} 251.2`}
-          strokeLinecap="round"
-          transform="rotate(-90 48 48)"
-        />
-      </svg>
-      <div className="absolute flex flex-col items-center">
-        <span className="text-3xl font-black" style={{ color }}>{score}</span>
-        <span className="text-xs text-slate-400 font-bold">/10</span>
-      </div>
-    </div>
-  );
-}
 
 export default function AnalyzePage() {
   const router = useRouter();
-  const { crmData, setCrmData, analysis, setAnalysis, isAnalyzing, setIsAnalyzing, showToast } =
+  const { crmData, setCrmData, setAnalysis, isAnalyzing, setIsAnalyzing, showToast } =
     useTeleprompterStore();
 
   const [transcript, setTranscript] = useState('');
@@ -59,7 +24,6 @@ export default function AnalyzePage() {
       showToast('Pega la transcripción antes de analizar.', 'error');
       return;
     }
-    // Sync context fields to store so PostCallAnalysis has them
     setCrmData({ cliente: localCliente, asesor: localAsesor, tipoLead: localTipo });
     setIsAnalyzing(true);
     setAnalysis(null);
@@ -87,13 +51,6 @@ export default function AnalyzePage() {
     }
   };
 
-  const isDemo = analysis && (analysis as any)._demo === true;
-  const scoreColor =
-    !analysis ? ''
-    : analysis.puntuacion >= 8 ? 'text-emerald-600'
-    : analysis.puntuacion >= 6 ? 'text-amber-600'
-    : 'text-red-500';
-
   return (
     <div className="min-h-screen bg-slate-900 font-sans">
       {/* Header */}
@@ -111,15 +68,14 @@ export default function AnalyzePage() {
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-4 py-8 space-y-6">
-        {/* Context row */}
+      <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
+        {/* Context */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
             <label className="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-1">
               <User className="w-3 h-3 inline mr-1" />Cliente
             </label>
             <input
-              type="text"
               value={localCliente}
               onChange={(e) => setLocalCliente(e.target.value)}
               placeholder="Nombre del cliente"
@@ -131,7 +87,6 @@ export default function AnalyzePage() {
               <User className="w-3 h-3 inline mr-1" />Asesor
             </label>
             <input
-              type="text"
               value={localAsesor}
               onChange={(e) => setLocalAsesor(e.target.value)}
               placeholder="Tu nombre"
@@ -162,9 +117,7 @@ export default function AnalyzePage() {
               <ClipboardPaste className="w-4 h-4 text-indigo-400" />
               Transcripción de HubSpot
             </p>
-            {wordCount > 0 && (
-              <span className="text-xs text-slate-400">{wordCount} palabras</span>
-            )}
+            {wordCount > 0 && <span className="text-xs text-slate-400">{wordCount} palabras</span>}
           </div>
           <textarea
             value={transcript}
@@ -179,88 +132,17 @@ export default function AnalyzePage() {
             className="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-xl py-3 transition"
           >
             {isAnalyzing ? (
-              <><Loader2 className="w-5 h-5 animate-spin" /> Analizando llamada...</>
+              <><Loader2 className="w-5 h-5 animate-spin" /> Analizando...</>
             ) : (
               <><Sparkles className="w-5 h-5" /> Analizar con IA</>
             )}
           </button>
         </div>
 
-        {/* Loading */}
-        {isAnalyzing && (
-          <div className="bg-slate-800 rounded-2xl p-8 flex flex-col items-center gap-3 text-center">
-            <Loader2 className="w-8 h-8 text-indigo-400 animate-spin" />
-            <p className="text-white font-bold">Analizando con IA...</p>
-            <p className="text-slate-400 text-sm">GPT-4o-mini está evaluando la llamada</p>
-          </div>
-        )}
-
-        {/* Results */}
-        {analysis && !isAnalyzing && (
-          <div className="space-y-4 animate-fade-in">
-            {isDemo && (
-              <div className="bg-amber-900/30 border border-amber-700 rounded-xl p-3 flex gap-2 items-start">
-                <span className="text-amber-400 flex-shrink-0">⚠️</span>
-                <p className="text-xs text-amber-300 leading-relaxed">
-                  <strong>Modo demo</strong> — análisis automático sin IA. Agrega{' '}
-                  <code className="bg-amber-900/50 px-1 rounded">OPENAI_API_KEY</code> en Vercel para coaching real.
-                </p>
-              </div>
-            )}
-
-            {/* Score + resumen */}
-            <div className="bg-slate-800 rounded-2xl p-6 flex items-center gap-6">
-              <div className="relative flex items-center justify-center w-24 h-24 flex-shrink-0">
-                <ScoreRing score={analysis.puntuacion} />
-              </div>
-              <div className="flex-1">
-                <p className="text-xs font-bold text-indigo-400 uppercase tracking-widest mb-2">
-                  Evaluación · Coaching MultiMoney
-                </p>
-                <p className="text-slate-200 text-sm leading-relaxed">{analysis.resumen}</p>
-              </div>
-            </div>
-
-            {/* Puntos fuertes / Áreas mejora */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-emerald-950/60 border border-emerald-800 rounded-2xl p-5">
-                <p className="text-xs font-bold text-emerald-400 uppercase tracking-widest mb-4 flex items-center gap-1">
-                  <TrendingUp className="w-3 h-3" /> Puntos fuertes
-                </p>
-                <ul className="space-y-2">
-                  {analysis.puntosFuertes?.map((p, i) => (
-                    <li key={i} className="text-sm text-emerald-200 flex gap-2">
-                      <span className="text-emerald-500 font-bold flex-shrink-0">✓</span>
-                      {p}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="bg-amber-950/60 border border-amber-800 rounded-2xl p-5">
-                <p className="text-xs font-bold text-amber-400 uppercase tracking-widest mb-4 flex items-center gap-1">
-                  <TrendingDown className="w-3 h-3" /> Áreas de mejora
-                </p>
-                <ul className="space-y-2">
-                  {analysis.areasMejora?.map((a, i) => (
-                    <li key={i} className="text-sm text-amber-200 flex gap-2">
-                      <span className="text-amber-500 font-bold flex-shrink-0">→</span>
-                      {a}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-
-            {/* Recomendación */}
-            <div className="bg-indigo-950/60 border border-indigo-800 rounded-2xl p-5">
-              <p className="text-xs font-bold text-indigo-400 uppercase tracking-widest mb-3 flex items-center gap-1">
-                <ArrowRight className="w-3 h-3" /> Siguiente acción recomendada
-              </p>
-              <p className="text-slate-200 text-sm leading-relaxed">{analysis.recomendacion}</p>
-            </div>
-          </div>
-        )}
+        {/* Results rendered via PostCallAnalysis — uses Zustand store */}
+        <div className="[&_.mt-6]:mt-0">
+          <PostCallAnalysis />
+        </div>
       </div>
 
       <Toast />

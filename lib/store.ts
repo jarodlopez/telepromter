@@ -34,12 +34,30 @@ export interface Toast {
   type: 'success' | 'error' | 'info';
 }
 
+export interface CategoryScore {
+  calificacion: number;
+  maximo: number;
+  hallazgos: string;
+}
+
 export interface CallAnalysis {
-  puntosFuertes: string[];
-  areasMejora: string[];
-  recomendacion: string;
-  puntuacion: number;
-  resumen: string;
+  calificacionFinal: number;
+  dictamen: string;
+  resumenEjecutivo: string;
+  categorias: {
+    apertura: CategoryScore;
+    descubrimiento: CategoryScore;
+    pitchComercial: CategoryScore;
+    manejoObjeciones: CategoryScore;
+    cierre: CategoryScore;
+    despedida: CategoryScore;
+  };
+  fortalezas: string[];
+  oportunidadesMejora: string[];
+  riesgosDetectados: string[];
+  coachingRecomendado: string;
+  veredictoFinal: string;
+  _demo?: boolean;
 }
 
 interface TeleprompterStore {
