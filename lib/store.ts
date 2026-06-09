@@ -1,6 +1,7 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
-interface CRMData {
+export interface CRMData {
   asesor: string;
   cliente: string;
   ingresos: string;
@@ -13,7 +14,7 @@ interface CRMData {
   tipoLead: 'upper' | 'gancho' | 'expirado' | 'longtrack';
 }
 
-interface CallData {
+export interface CallData {
   motivo: string;
   refFamiliar: string;
   refAmistad: string;
@@ -22,26 +23,27 @@ interface CallData {
   curpValidada: boolean;
 }
 
-interface Checklist {
+export interface Checklist {
   tarea: boolean;
   estatus: boolean;
   nota: boolean;
 }
 
+export interface Toast {
+  message: string;
+  type: 'success' | 'error' | 'info';
+}
+
 interface TeleprompterStore {
-  // CRM Data
   crmData: CRMData;
   setCrmData: (data: Partial<CRMData>) => void;
 
-  // Call Data
   callData: CallData;
   setCallData: (data: Partial<CallData>) => void;
 
-  // Checklist
   checklist: Checklist;
   setChecklist: (data: Partial<Checklist>) => void;
 
-  // UI State
   appState: 'setup' | 'call';
   setAppState: (state: 'setup' | 'call') => void;
 
@@ -52,7 +54,6 @@ interface TeleprompterStore {
   incrementCallDuration: () => void;
   resetCallDuration: () => void;
 
-  // Tools Panel
   activeToolTab: 'objeciones' | 'faq';
   setActiveToolTab: (tab: 'objeciones' | 'faq') => void;
 
@@ -65,7 +66,13 @@ interface TeleprompterStore {
   isMobileToolsOpen: boolean;
   setIsMobileToolsOpen: (open: boolean) => void;
 
-  // Reset
+  confirmingReset: boolean;
+  setConfirmingReset: (v: boolean) => void;
+
+  toast: Toast | null;
+  showToast: (message: string, type?: Toast['type']) => void;
+  clearToast: () => void;
+
   resetAll: () => void;
 }
 
@@ -97,53 +104,81 @@ const initialChecklist: Checklist = {
   nota: false,
 };
 
-export const useTeleprompterStore = create<TeleprompterStore>((set) => ({
-  crmData: initialCrmData,
-  setCrmData: (data) =>
-    set((state) => ({ crmData: { ...state.crmData, ...data } })),
-
-  callData: initialCallData,
-  setCallData: (data) =>
-    set((state) => ({ callData: { ...state.callData, ...data } })),
-
-  checklist: initialChecklist,
-  setChecklist: (data) =>
-    set((state) => ({ checklist: { ...state.checklist, ...data } })),
-
-  appState: 'setup',
-  setAppState: (state) => set({ appState: state }),
-
-  step: 1,
-  setStep: (step) => set({ step }),
-
-  callDuration: 0,
-  incrementCallDuration: () =>
-    set((state) => ({ callDuration: state.callDuration + 1 })),
-  resetCallDuration: () => set({ callDuration: 0 }),
-
-  activeToolTab: 'objeciones',
-  setActiveToolTab: (tab) => set({ activeToolTab: tab }),
-
-  activeObjection: null,
-  setActiveObjection: (id) => set({ activeObjection: id }),
-
-  activeFaq: null,
-  setActiveFaq: (idx) => set({ activeFaq: idx }),
-
-  isMobileToolsOpen: false,
-  setIsMobileToolsOpen: (open) => set({ isMobileToolsOpen: open }),
-
-  resetAll: () =>
-    set({
+export const useTeleprompterStore = create<TeleprompterStore>()(
+  persist(
+    (set) => ({
       crmData: initialCrmData,
+      setCrmData: (data) =>
+        set((state) => ({ crmData: { ...state.crmData, ...data } })),
+
       callData: initialCallData,
+      setCallData: (data) =>
+        set((state) => ({ callData: { ...state.callData, ...data } })),
+
       checklist: initialChecklist,
+      setChecklist: (data) =>
+        set((state) => ({ checklist: { ...state.checklist, ...data } })),
+
       appState: 'setup',
+      setAppState: (state) => set({ appState: state }),
+
       step: 1,
+      setStep: (step) => set({ step }),
+
       callDuration: 0,
+      incrementCallDuration: () =>
+        set((state) => ({ callDuration: state.callDuration + 1 })),
+      resetCallDuration: () => set({ callDuration: 0 }),
+
       activeToolTab: 'objeciones',
+      setActiveToolTab: (tab) => set({ activeToolTab: tab }),
+
       activeObjection: null,
+      setActiveObjection: (id) => set({ activeObjection: id }),
+
       activeFaq: null,
+      setActiveFaq: (idx) => set({ activeFaq: idx }),
+
       isMobileToolsOpen: false,
+      setIsMobileToolsOpen: (open) => set({ isMobileToolsOpen: open }),
+
+      confirmingReset: false,
+      setConfirmingReset: (v) => set({ confirmingReset: v }),
+
+      toast: null,
+      showToast: (message, type = 'success') => {
+        set({ toast: { message, type } });
+        setTimeout(() => set({ toast: null }), 3500);
+      },
+      clearToast: () => set({ toast: null }),
+
+      resetAll: () =>
+        set({
+          crmData: initialCrmData,
+          callData: initialCallData,
+          checklist: initialChecklist,
+          appState: 'setup',
+          step: 1,
+          callDuration: 0,
+          activeToolTab: 'objeciones',
+          activeObjection: null,
+          activeFaq: null,
+          isMobileToolsOpen: false,
+          confirmingReset: false,
+          toast: null,
+        }),
     }),
-}));
+    {
+      name: 'teleprompter-state',
+      partialize: (state) => ({
+        crmData: state.crmData,
+        callData: state.callData,
+        checklist: state.checklist,
+        appState: state.appState,
+        step: state.step,
+        callDuration: state.callDuration,
+        activeToolTab: state.activeToolTab,
+      }),
+    }
+  )
+);
