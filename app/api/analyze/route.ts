@@ -74,6 +74,19 @@ Una llamada puede terminar en:
 Ninguno de estos resultados determina automáticamente la calidad de la llamada.
 Debes evaluar únicamente aquello que estaba bajo control del asesor.
 
+# REGLA DE FUENTE DE VERDAD
+
+La transcripción es la fuente de verdad absoluta.
+
+Los campos del registro del sistema (seguimiento agendado, objeciones registradas, motivo, referencias) son orientativos y pueden estar incompletos o desactualizados.
+
+Si la transcripción evidencia que ocurrió algo, evalúalo como ocurrido, independientemente de lo que diga el campo del sistema.
+
+Ejemplos:
+* Si el campo dice "Seguimiento agendado: ❌ No agendado" pero en la transcripción el asesor agenda explícitamente una llamada y el cliente acepta → evalúa como seguimiento agendado correctamente.
+* Si el campo dice "0 objeciones registradas" pero en la transcripción el cliente expresa resistencia y el asesor responde → evalúa el manejo de objeciones según la transcripción.
+* Si la transcripción no está disponible, usa los campos del sistema como referencia.
+
 # METODOLOGÍA DE EVALUACIÓN
 
 Antes de comenzar cualquier auditoría debes determinar:
