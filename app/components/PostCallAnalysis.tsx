@@ -2,7 +2,7 @@
 import React from 'react';
 import {
   TrendingUp, TrendingDown, AlertTriangle, Loader2,
-  GraduationCap, Star, Ear, Heart, MessageSquare,
+  GraduationCap, Star, Ear, Heart, MessageSquare, Lightbulb,
   Target, CheckCircle2, BookOpen, UserCheck,
 } from 'lucide-react';
 import { useTeleprompterStore } from '@/lib/store';
@@ -166,7 +166,7 @@ export function PostCallAnalysis() {
           </p>
           <ul className="space-y-3">
             {analysis.oportunidadesMejora.map((o: any, i: number) => (
-              <li key={i} className="space-y-0.5">
+              <li key={i} className="space-y-1">
                 <p className="text-sm text-amber-900 flex gap-2">
                   <span className="text-amber-600 font-bold flex-shrink-0">{i + 1}.</span>
                   {typeof o === 'string' ? o : o.punto}
@@ -174,6 +174,12 @@ export function PostCallAnalysis() {
                 {o.evidencia && (
                   <p className="text-xs text-amber-700 italic ml-5 bg-amber-100/60 px-2 py-1 rounded">
                     "{o.evidencia}"
+                  </p>
+                )}
+                {o.sugerencia && (
+                  <p className="text-xs text-amber-800 ml-5 bg-amber-200/50 border border-amber-300 px-2 py-1.5 rounded flex gap-1.5 items-start">
+                    <Lightbulb className="w-3 h-3 text-amber-600 flex-shrink-0 mt-0.5" />
+                    {o.sugerencia}
                   </p>
                 )}
               </li>

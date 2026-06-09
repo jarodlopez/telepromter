@@ -37,6 +37,7 @@ export interface Toast {
 export interface EvidencedPoint {
   punto: string;
   evidencia: string;
+  sugerencia?: string;
 }
 
 export interface CategoryEval {
