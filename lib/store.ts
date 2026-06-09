@@ -34,28 +34,34 @@ export interface Toast {
   type: 'success' | 'error' | 'info';
 }
 
-export interface CategoryScore {
+export interface EvidencedPoint {
+  punto: string;
+  evidencia: string;
+}
+
+export interface CategoryEval {
   calificacion: number;
-  maximo: number;
   hallazgos: string;
 }
 
 export interface CallAnalysis {
+  estadoFinal: string;
   calificacionFinal: number;
   dictamen: string;
   resumenEjecutivo: string;
+  fortalezas: EvidencedPoint[];
+  oportunidadesMejora: EvidencedPoint[];
   categorias: {
-    apertura: CategoryScore;
-    descubrimiento: CategoryScore;
-    pitchComercial: CategoryScore;
-    manejoObjeciones: CategoryScore;
-    cierre: CategoryScore;
-    despedida: CategoryScore;
+    apertura: CategoryEval;
+    descubrimiento: CategoryEval;
+    escuchaActiva: CategoryEval;
+    empatia: CategoryEval & { nivel: string };
+    presentacionOferta: CategoryEval;
+    manejoObjeciones: CategoryEval;
+    cierre: CategoryEval;
   };
-  fortalezas: string[];
-  oportunidadesMejora: string[];
   riesgosDetectados: string[];
-  coachingRecomendado: string;
+  coaching: string;
   veredictoFinal: string;
   _demo?: boolean;
 }

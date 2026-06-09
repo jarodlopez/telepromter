@@ -17,184 +17,221 @@ function getDictamen(score: number): string {
 
 function mockAnalysis(crmData: any, callData: any, callDuration: number) {
   const tieneRefs = !!(callData.refFamiliar && callData.refAmistad);
-  const objecionesSuficientes = callData.objecionesRebatidas >= 3;
+  const objecionesSuf = callData.objecionesRebatidas >= 3;
   const duracionOk = callDuration >= 180;
-  const tieneMotivoCredito = !!callData.motivo;
-
-  const apertura = tieneMotivoCredito ? 5 : 3;
-  const descubrimiento = tieneMotivoCredito ? 5 : 3;
-  const pitch = crmData.monto ? 15 : 10;
-  const objeciones = objecionesSuficientes ? 22 : 14;
-  const cierre = tieneRefs ? 17 : 10;
-  const despedida = duracionOk ? 14 : 10;
-  const calificacionFinal = apertura + descubrimiento + pitch + objeciones + cierre + despedida;
+  const score = 65 + (tieneRefs ? 8 : 0) + (objecionesSuf ? 5 : 0) + (duracionOk ? 4 : 0) + (callData.motivo ? 3 : 0);
 
   return {
     _demo: true,
-    calificacionFinal,
-    dictamen: getDictamen(calificacionFinal),
-    resumenEjecutivo: `Llamada de ${formatTime(callDuration)} con ${crmData.cliente || 'el cliente'} (lead ${crmData.tipoLead?.toUpperCase()}). ${tieneRefs ? 'Se obtuvieron las 2 referencias requeridas.' : 'Las referencias obligatorias no fueron completadas.'} Análisis de demo — agrega OPENAI_API_KEY para evaluación real con IA.`,
-    categorias: {
-      apertura: {
-        calificacion: apertura,
-        maximo: 6,
-        hallazgos: tieneMotivoCredito
-          ? 'El asesor identificó el motivo del crédito. Verificar que se mencionó la grabación de la llamada y que el abordaje fue directo.'
-          : 'No se registró motivo del crédito. Revisar si el asesor preguntó "¿Qué te llevó a solicitar este crédito?" según el script.',
-      },
-      descubrimiento: {
-        calificacion: descubrimiento,
-        maximo: 6,
-        hallazgos: tieneMotivoCredito
-          ? 'Se indagó el propósito del crédito. Confirmar si se preguntó la fecha esperada de depósito y la situación financiera actual.'
-          : 'Sondeo incompleto. Faltó preguntar: fecha de depósito esperada, ocupación e ingresos comprobables.',
-      },
-      pitchComercial: {
-        calificacion: pitch,
-        maximo: 21,
-        hallazgos: crmData.monto
-          ? `Oferta presentada: $${crmData.monto} a ${crmData.tasa || '—'}. Verificar si se explicaron todos los beneficios: depósito en 2h, 60 meses, ampliación a partir del 3er pago.`
-          : 'No se registró monto ni condiciones de la oferta. El pitch debe incluir monto, tasa y beneficios diferenciales.',
-      },
-      manejoObjeciones: {
-        calificacion: objeciones,
-        maximo: 28,
-        hallazgos: objecionesSuficientes
-          ? `${callData.objecionesRebatidas} objeciones manejadas correctamente. Confirmar que se usó el marco REA (Reconoce/Empatiza/Asegura) en cada una.`
-          : `Solo ${callData.objecionesRebatidas || 0} objeciones registradas. El playbook exige un mínimo de 3 intentos de cierre ante objeciones.`,
-      },
-      cierre: {
-        calificacion: cierre,
-        maximo: 21,
-        hallazgos: tieneRefs
-          ? `Referencias obtenidas: familiar (${callData.refFamiliar}) y conocido (${callData.refAmistad}). Verificar recapitulación de monto, cuota y fecha de primer pago.`
-          : 'Referencias no completadas. Son OBLIGATORIAS para el hand-off con Riesgos. Sin ellas no se puede proceder al siguiente paso.',
-      },
-      despedida: {
-        calificacion: despedida,
-        maximo: 18,
-        hallazgos: duracionOk
-          ? callData.fechaSeguimiento
-            ? `Seguimiento agendado para ${callData.fechaSeguimiento}. Buena gestión del cierre de llamada.`
-            : 'Duración adecuada pero no se agendó seguimiento. Toda llamada debe cerrar con fecha concreta.'
-          : 'Llamada breve — riesgo de no haber completado todas las etapas del script. Agendar seguimiento con fecha y hora.',
-      },
-    },
+    estadoFinal: 'Seguimiento programado',
+    calificacionFinal: Math.min(95, score),
+    dictamen: getDictamen(Math.min(95, score)),
+    resumenEjecutivo: `Llamada de ${formatTime(callDuration)} con ${crmData.cliente || 'el cliente'} (lead ${crmData.tipoLead?.toUpperCase()}). Análisis de demo — agrega OPENAI_API_KEY para evaluación real con IA.`,
     fortalezas: [
-      crmData.monto ? `Oferta concreta presentada ($${crmData.monto})` : 'Uso del teleprompter estructurado',
-      tieneRefs ? 'Se obtuvieron las 2 referencias obligatorias' : 'Flujo de llamada completado',
-      objecionesSuficientes ? `Manejo de ${callData.objecionesRebatidas} objeciones registradas` : 'Llamada completada con el script de MultiMoney',
+      { punto: 'Uso del teleprompter estructurado MultiMoney', evidencia: 'Flujo de llamada completado con las etapas del script.' },
+      { punto: tieneRefs ? 'Referencias obtenidas' : 'Oferta presentada al cliente', evidencia: tieneRefs ? `Familiar: ${callData.refFamiliar} | Conocido: ${callData.refAmistad}` : `Monto registrado: $${crmData.monto || '—'}` },
     ],
     oportunidadesMejora: [
-      !tieneRefs ? 'URGENTE: Completar referencias familiar y de amistad — son requisito de Riesgos' : 'Solicitar referencias al inicio del cierre, no al final',
-      !objecionesSuficientes ? 'Aplicar el marco REA completo en al menos 3 objeciones por llamada' : 'Documentar el tipo de objeción manejada para análisis de patrones',
-      !callData.fechaSeguimiento ? 'Agendar seguimiento concreto — sin fecha no hay pipeline' : 'Confirmar seguimiento por WhatsApp inmediatamente al colgar',
+      { punto: !tieneRefs ? 'Referencias no completadas' : 'Confirmar seguimiento por escrito', evidencia: !tieneRefs ? 'No se registraron referencias en el sistema.' : 'No hay constancia de confirmación por WhatsApp.' },
+      { punto: !objecionesSuf ? 'Manejo de objeciones incompleto' : 'Documentar tipo de objeción para análisis de patrones', evidencia: `${callData.objecionesRebatidas || 0} objeciones registradas (mínimo requerido: 3).` },
     ],
+    categorias: {
+      apertura: { calificacion: 8, hallazgos: 'El asesor inició la llamada presentándose y mencionando la grabación. Sin transcripción no se puede verificar el tono.' },
+      descubrimiento: { calificacion: callData.motivo ? 7 : 5, hallazgos: callData.motivo ? `Motivo identificado: ${callData.motivo}.` : 'No se registró motivo del crédito en el sistema.' },
+      escuchaActiva: { calificacion: 7, hallazgos: 'Sin transcripción disponible. Se evaluará cuando se proporcione el texto de la llamada.' },
+      empatia: { calificacion: 7, nivel: 'Adecuada', hallazgos: 'No se puede verificar sin transcripción. La empatía se evaluará con el texto de la llamada.' },
+      presentacionOferta: { calificacion: crmData.monto ? 8 : 5, hallazgos: crmData.monto ? `Oferta presentada: $${crmData.monto} a ${crmData.tasa || '—'}, cuota $${crmData.cuota || '—'}.` : 'No se registró monto en el sistema.' },
+      manejoObjeciones: { calificacion: objecionesSuf ? 8 : 5, hallazgos: objecionesSuf ? `${callData.objecionesRebatidas} objeciones manejadas.` : `Solo ${callData.objecionesRebatidas || 0} objeciones registradas. Mínimo requerido: 3.` },
+      cierre: { calificacion: tieneRefs ? 8 : 5, hallazgos: tieneRefs ? 'Referencias obtenidas correctamente.' : 'Referencias no completadas — requeridas para handoff con Riesgo.' },
+    },
     riesgosDetectados: [
-      ...(!tieneRefs ? ['Referencias no obtenidas — impide avanzar en el proceso de Riesgos'] : []),
-      ...(!callData.fechaSeguimiento ? ['Sin seguimiento agendado — riesgo de perder el lead'] : []),
-      ...(callDuration < 120 ? ['Llamada muy corta — posible incumplimiento del script completo'] : []),
+      ...(!tieneRefs ? ['Referencias no obtenidas — impide avanzar con el equipo de Riesgo.'] : []),
+      ...(!callData.fechaSeguimiento ? ['No se agendó seguimiento — riesgo de perder el lead.'] : []),
     ],
-    coachingRecomendado: `En la próxima llamada, enfocarse en: (1) Completar las referencias al momento del cierre, antes del hand-off. (2) ${objecionesSuficientes ? 'Mantener el marco REA en cada objeción' : 'Practicar el marco REA: Reconoce → Empatiza → Asegura, con al menos 3 intentos'}. (3) Terminar SIEMPRE con una fecha de seguimiento confirmada y registrada en HubSpot.`,
-    veredictoFinal: `Calificación de demo (${calificacionFinal}/100) basada en datos del sistema. ${!tieneRefs ? 'El factor más crítico: falta de referencias.' : ''} ${!objecionesSuficientes ? 'El manejo de objeciones necesita refuerzo.' : ''} Agrega OPENAI_API_KEY para un análisis real sobre la transcripción de la llamada.`,
+    coaching: `En próximas llamadas: (1) Solicitar referencias antes del handoff, son obligatorias. (2) ${objecionesSuf ? 'Mantener el marco REA ante cada objeción.' : 'Practicar el marco REA: Reconoce → Empatiza → Asegura con mínimo 3 intentos.'} (3) Cerrar toda llamada con seguimiento en fecha y hora concretos.`,
+    veredictoFinal: `Calificación de demo (${Math.min(95, score)}/100). Para análisis real sobre la transcripción agrega OPENAI_API_KEY en Vercel.`,
   };
 }
 
-const SYSTEM_PROMPT = `Eres COACH-MM, evaluador experto de calidad de llamadas de ventas para MultiMoney México — fintech de créditos personales.
+const SYSTEM_PROMPT = `Eres un Auditor Senior de Calidad, Ventas y Experiencia del Cliente para MultiMoney México.
 
-## SCRIPTS DE REFERENCIA POR ETAPA
+Tu función NO es verificar únicamente si una venta fue exitosa.
 
-**UPPER (solicitud nueva):** Saludo → presentación + mención de grabación + motivo → preguntas de perfilamiento (motivación, fecha depósito, ingresos, ocupación) → oferta con monto y tasa → cierre pidiendo identificación.
+Tu función es evaluar objetivamente el desempeño del asesor durante la llamada.
 
-**GANCHO (lead que no avanzó):** Rescata la objeción anterior, menciona mejora de oferta → sondeo de situación actual → oferta superior → cierre.
+# PRINCIPIO FUNDAMENTAL
 
-**EXPIRADO (no completó el proceso):** Reactivar sin empezar de cero → sondeo de por qué no avanzó → nueva oferta → confirmar teléfono/correo para OTP.
+NO confundas el resultado final de la llamada con la calidad de ejecución del asesor.
 
-**LONG TRACK (biométrico completado):** Validar CURP → confirmar datos personales → expectativas de pago y ampliación → cierre con recapitulación → 2 referencias → hand-off a Riesgo.
+Una llamada puede terminar en:
+* Venta exitosa.
+* Rechazo por riesgo.
+* Rechazo por score.
+* Falta de documentos.
+* Cliente no interesado.
+* Seguimiento pendiente.
 
-## RÚBRICA DE EVALUACIÓN (Total: 100 puntos)
+Ninguno de estos resultados determina automáticamente la calidad de la llamada.
+Debes evaluar únicamente aquello que estaba bajo control del asesor.
 
-### APERTURA — máx 6 pts
-1. Se presentó con nombre + apellido y mencionó MultiMoney con cordialidad (tono, vocabulario) → 2 pts
-2. Indicó motivo de la llamada según el tipo de lead → 2 pts
-3. Abordó al cliente directamente, sin solicitar permiso → 2 pts
+# METODOLOGÍA DE EVALUACIÓN
 
-### DESCUBRIMIENTO — máx 6 pts
-4. Preguntó qué motivó al cliente a solicitar el crédito → 2 pts
-5. Preguntó para cuándo necesita disponer del crédito → 2 pts
-6. Indagó ocupación e ingresos comprobables → 2 pts
+Antes de comenzar cualquier auditoría debes determinar:
 
-### PITCH COMERCIAL — máx 21 pts
-7. Explicó condiciones del préstamo (monto, tasa, plazo) → 3 pts
-8. Mencionó propuesta de valor: depósito en máx 2h, 100% en línea → 3 pts
-9. Realizó desglose de beneficios / promoción de temporada → 3 pts
-10. Resaltó otros beneficios: ampliación a partir del 3er pago, sin penalización por capital → 3 pts
-11. Usó testimonios personales o casos de éxito → 3 pts
-12. Estableció expectativas claras sobre ampliación de crédito → 3 pts
-13. Realizó pregunta de cierre (respuesta esperada: Sí o aceptación explícita) → 3 pts
+## Estado Final de la Llamada
 
-### MANEJO DE OBJECIONES — máx 28 pts
-(Incluye educación del cliente)
-14. Explicó proceso a seguir: biométricos, CLABE, documentos → 4 pts
-15. Reafirmó el monto aprobado → 4 pts
-16. Explicó interés y cuotas según plazo → 4 pts
-17. Explicó beneficio de représtamo / ampliación futura → 4 pts
-18. Confirmó documentación válida: INE ambos lados, selfie sin accesorios, comprobante domicilio (CFE/Telmex/Megacable/etc.) → 4 pts
-19. Despejó las dudas que planteó el cliente → 4 pts
-20. Ejemplificó cómo utilizar la línea de crédito → 4 pts
+Clasifica la llamada en una sola categoría:
+1. Venta concretada
+2. Originación en proceso
+3. Seguimiento programado
+4. Cliente rechaza la oferta
+5. Sistema rechaza la solicitud
+6. Falta documentación
+7. Llamada informativa
+8. Otro
 
-### CIERRE — máx 21 pts
-21. Resumen detallado de beneficios antes del cierre → 3 pts
-22. Indicó vigencia de la oferta → 3 pts
-23. Debatió objeciones con el marco REA (Reconoce/Empatiza/Asegura) mínimo 3 intentos → 3 pts
-24. Indicó formas de pago disponibles → 3 pts
-25. Informó período de depósito (máximo 2 horas) → 3 pts
-26. Aplicó técnica de cierre efectiva → 3 pts
-27. Identificó y aprovechó oportunidad de cierre → 3 pts
+Debes indicar explícitamente el estado final antes de comenzar la evaluación.
 
-### DESPEDIDA — máx 18 pts
-28. Vocalizó bien: tono, vocabulario, claridad durante toda la llamada → 3 pts
-29. Se despidió recordando su propio nombre → 3 pts
-30. Apego al script oficial de MultiMoney → 3 pts
-31. Agendó seguimiento con fecha y hora concreta → 3 pts
-32. Tipificó / registró correctamente en el sistema → 3 pts
-33. Generó interés efectivo — el cliente termina con una expectativa clara → 3 pts
+# REGLA CRÍTICA
 
-## DICTAMEN
-- 90-100 → Excelente
-- 80-89 → Bueno
-- 70-79 → Aceptable
-- 60-69 → Requiere Mejora
-- 0-59 → Crítico
+Nunca penalices criterios que dejaron de aplicar debido al estado final.
 
-## RIESGOS DETECTADOS — menciona si el asesor:
-- No informó que la llamada sería grabada
-- Prometió algo fuera del script oficial (tasas, montos, plazos no estándar)
-- No aplicó el marco REA ante objeciones
-- No pidió las 2 referencias al cerrar (familiar + conocido)
-- No validó CURP en Long Track
-- Usó vocabulario inapropiado o tono poco profesional
-- No agendó seguimiento
+Ejemplos:
 
-## INSTRUCCIONES
+Si el sistema rechazó la solicitud:
+NO penalizar por:
+* Falta de referencias.
+* Falta de firma.
+* Falta de handoff.
+* Falta de cierre exitoso.
+* Falta de desembolso.
+
+Si el cliente rechaza la oferta:
+NO penalizar por:
+* Falta de documentos.
+* Falta de OTP.
+* Falta de biométricos.
+
+Evalúa únicamente las acciones que razonablemente podían ejecutarse antes de la terminación del proceso.
+
+# ENFOQUE DE AUDITORÍA
+
+## Apertura
+* Presentación.
+* Identificación de MultiMoney.
+* Aviso de grabación.
+* Motivo de llamada.
+
+## Descubrimiento
+Capacidad para identificar:
+* Necesidad principal.
+* Monto requerido.
+* Urgencia.
+* Uso del dinero.
+* Ingresos.
+* Ocupación.
+* Endeudamiento.
+* Otras instituciones.
+
+## Escucha Activa
+Detecta si el asesor:
+* Profundiza respuestas.
+* Hace preguntas relevantes.
+* Aprovecha información proporcionada.
+* Construye sobre lo que dice el cliente.
+
+## Empatía
+Especial atención cuando el cliente mencione:
+* Enfermedades.
+* Fallecimientos.
+* Problemas familiares.
+* Estrés financiero.
+* Desempleo.
+
+Clasifica: Excelente / Adecuada / Insuficiente / Ausente.
+La empatía tiene un peso importante en la evaluación.
+
+## Presentación de Oferta
+Evalúa:
+* Claridad.
+* Personalización.
+* Explicación de beneficios.
+* Explicación de condiciones.
+
+No penalices porque el monto aprobado sea inferior al solicitado.
+Evalúa únicamente cómo el asesor defendió la oferta.
+
+## Manejo de Objeciones
+Una objeción existe cuando el cliente expresa duda, resistencia, inconformidad, comparación o incertidumbre.
+Detecta automáticamente las objeciones.
+Evalúa: Reconocimiento, Empatía, Argumentación, Resolución.
+No afirmes que no hubo objeciones si el cliente expresó resistencia o inconformidad.
+
+## Cierre
+Evalúa únicamente si el asesor avanzó correctamente al siguiente paso disponible.
+No exijas un cierre de venta cuando la llamada terminó por factores ajenos al asesor.
+
+# CRITERIOS DE CALIFICACIÓN
+90-100: Excelente
+80-89: Bueno
+70-79: Aceptable
+60-69: Requiere Mejora
+0-59: Crítico
+
+# REGLAS DE PUNTUACIÓN
+
+Una llamada no debe recibir una calificación crítica únicamente porque no se concretó la venta.
+Para obtener menos de 60 puntos deben existir fallas graves como:
+* Mala actitud.
+* Falta de descubrimiento.
+* Información incorrecta.
+* Ausencia de empatía.
+* Incumplimiento del proceso.
+* Mala gestión de objeciones.
+
+Si el asesor descubre correctamente la necesidad, mantiene control, explica la oferta, maneja objeciones y sigue el proceso, la llamada normalmente debe ubicarse entre 70 y 85 puntos incluso si no se concreta la venta.
+
+# EVIDENCIA OBLIGATORIA
+
+Cada hallazgo debe incluir evidencia textual.
+
+Cumple — cita directa: "Asesor: ¿Cuántas tarjetas quieres liquidar?"
+Incumple — indicación de ausencia: "No se identificó pregunta sobre fecha esperada de depósito."
+
+# COACHING
+
+Genera coaching específico y accionable.
+
+Incorrecto: "Debe mejorar ventas."
+Correcto: "Cuando el cliente mencione una enfermedad grave, valida emocionalmente la situación antes de continuar con el sondeo."
+
+# FORMATO DE SALIDA
+
 Responde ÚNICAMENTE con JSON válido, sin markdown ni texto extra:
+
 {
+  "estadoFinal": "<una de las 8 categorías>",
   "calificacionFinal": <0-100>,
   "dictamen": "<Excelente|Bueno|Aceptable|Requiere Mejora|Crítico>",
-  "resumenEjecutivo": "<2-3 oraciones sobre el desempeño general>",
+  "resumenEjecutivo": "<2-3 oraciones objetivas>",
+  "fortalezas": [
+    { "punto": "<descripción>", "evidencia": "<cita textual o indicación>" }
+  ],
+  "oportunidadesMejora": [
+    { "punto": "<descripción>", "evidencia": "<cita o indicación de ausencia>" }
+  ],
   "categorias": {
-    "apertura":         { "calificacion": <0-6>,  "maximo": 6,  "hallazgos": "<texto concreto>" },
-    "descubrimiento":   { "calificacion": <0-6>,  "maximo": 6,  "hallazgos": "<texto concreto>" },
-    "pitchComercial":   { "calificacion": <0-21>, "maximo": 21, "hallazgos": "<texto concreto>" },
-    "manejoObjeciones": { "calificacion": <0-28>, "maximo": 28, "hallazgos": "<texto concreto>" },
-    "cierre":           { "calificacion": <0-21>, "maximo": 21, "hallazgos": "<texto concreto>" },
-    "despedida":        { "calificacion": <0-18>, "maximo": 18, "hallazgos": "<texto concreto>" }
+    "apertura":           { "calificacion": <0-10>, "hallazgos": "<texto con evidencia>" },
+    "descubrimiento":     { "calificacion": <0-10>, "hallazgos": "<texto con evidencia>" },
+    "escuchaActiva":      { "calificacion": <0-10>, "hallazgos": "<texto con evidencia>" },
+    "empatia":            { "calificacion": <0-10>, "nivel": "<Excelente|Adecuada|Insuficiente|Ausente>", "hallazgos": "<texto con evidencia>" },
+    "presentacionOferta": { "calificacion": <0-10>, "hallazgos": "<texto con evidencia>" },
+    "manejoObjeciones":   { "calificacion": <0-10>, "hallazgos": "<texto con evidencia>" },
+    "cierre":             { "calificacion": <0-10>, "hallazgos": "<texto con evidencia>" }
   },
-  "fortalezas": ["<fortaleza 1>", "<fortaleza 2>", "<fortaleza 3>"],
-  "oportunidadesMejora": ["<mejora más urgente>", "<mejora 2>", "<mejora 3>"],
-  "riesgosDetectados": ["<riesgo o incumplimiento detectado>"],
-  "coachingRecomendado": "<párrafo específico sobre qué practicar en próximas llamadas>",
-  "veredictoFinal": "<párrafo explicando por qué obtuvo esa calificación>"
+  "riesgosDetectados": ["<riesgo con evidencia>"],
+  "coaching": "<párrafo específico y accionable>",
+  "veredictoFinal": "<párrafo explicando la calificación>"
 }`;
 
 export async function POST(req: NextRequest) {
@@ -207,25 +244,25 @@ export async function POST(req: NextRequest) {
 
   const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-  const userPrompt = `Evalúa esta llamada de venta de crédito personal de MultiMoney:
+  const userPrompt = `Audita esta llamada de venta de crédito personal de MultiMoney México:
 
 DATOS DEL REGISTRO:
 - Tipo de lead: ${crmData.tipoLead?.toUpperCase()}
 - Cliente: ${crmData.cliente || 'No registrado'}
 - Asesor: ${crmData.asesor || 'No registrado'}
-- Monto: $${crmData.monto || '—'} | Tasa: ${crmData.tasa || '—'} | Cuota: $${crmData.cuota || '—'} | Plazo: ${crmData.plazo || '—'} meses
+- Monto aprobado: $${crmData.monto || '—'} | Tasa: ${crmData.tasa || '—'} | Cuota: $${crmData.cuota || '—'} | Plazo: ${crmData.plazo || '—'} meses
 - Duración de llamada: ${formatTime(callDuration)}
-- Objeciones manejadas: ${callData.objecionesRebatidas || 0} (mínimo requerido: 3)
+- Objeciones manejadas: ${callData.objecionesRebatidas || 0}
 - Motivo del crédito: ${callData.motivo || 'No registrado'}
 - Referencia familiar: ${callData.refFamiliar ? `✅ ${callData.refFamiliar}` : '❌ No obtenida'}
 - Referencia de amistad: ${callData.refAmistad ? `✅ ${callData.refAmistad}` : '❌ No obtenida'}
 ${crmData.tipoLead === 'longtrack' ? `- CURP validada: ${callData.curpValidada ? '✅ Sí' : '❌ Pendiente'}` : ''}
 - Seguimiento agendado: ${callData.fechaSeguimiento || '❌ No agendado'}
 
-TRANSCRIPCIÓN DE LA LLAMADA:
+TRANSCRIPCIÓN:
 ${
   transcript?.trim()
-    ? `(Asesor = ${crmData.asesor || 'el asesor de MultiMoney'} | Cliente = ${crmData.cliente || 'el cliente'})\n\n${transcript.trim()}`
+    ? `(Asesor = ${crmData.asesor || 'el asesor'} | Cliente = ${crmData.cliente || 'el cliente'})\n\n${transcript.trim()}`
     : '(Sin transcripción — evalúa únicamente con los datos del registro)'
 }`;
 
@@ -238,7 +275,7 @@ ${
       ],
       response_format: { type: 'json_object' },
       temperature: 0.2,
-      max_tokens: 1500,
+      max_tokens: 2000,
     });
 
     const content = completion.choices[0].message.content ?? '{}';
