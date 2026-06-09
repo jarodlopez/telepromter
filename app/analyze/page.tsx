@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useCallback } from 'react';
-import { ArrowLeft, Sparkles, Loader2, ClipboardPaste, User, Target, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, Sparkles, Loader2, ClipboardPaste, User, Target, CheckCircle2, RotateCcw } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useTeleprompterStore } from '@/lib/store';
 import { PostCallAnalysis } from '@/app/components/PostCallAnalysis';
@@ -52,7 +52,7 @@ function parseHubSpot(raw: string): {
 
 export default function AnalyzePage() {
   const router = useRouter();
-  const { crmData, setCrmData, setAnalysis, isAnalyzing, setIsAnalyzing, showToast } =
+  const { crmData, setCrmData, setAnalysis, isAnalyzing, setIsAnalyzing, showToast, analysis } =
     useTeleprompterStore();
 
   const [rawTranscript, setRawTranscript] = useState('');
@@ -80,6 +80,16 @@ export default function AnalyzePage() {
     },
     []
   );
+
+  const handleNuevoAnalisis = () => {
+    setRawTranscript('');
+    setCleanTranscript('');
+    setLocalCliente('');
+    setLocalAsesor('');
+    setLocalTipo('upper');
+    setHubSpotDetected(false);
+    setAnalysis(null);
+  };
 
   const analyze = async () => {
     if (!cleanTranscript.trim()) {
@@ -129,6 +139,14 @@ export default function AnalyzePage() {
           <Sparkles className="w-5 h-5 text-indigo-400" />
           <span className="text-white font-bold text-sm">Coaching IA · MultiMoney</span>
         </div>
+        {analysis && (
+          <button
+            onClick={handleNuevoAnalisis}
+            className="ml-auto flex items-center gap-2 bg-slate-700 hover:bg-slate-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition"
+          >
+            <RotateCcw className="w-4 h-4" /> Nuevo Análisis
+          </button>
+        )}
       </div>
 
       <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
