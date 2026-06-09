@@ -34,6 +34,14 @@ export interface Toast {
   type: 'success' | 'error' | 'info';
 }
 
+export interface CallAnalysis {
+  puntosFuertes: string[];
+  areasMejora: string[];
+  recomendacion: string;
+  puntuacion: number;
+  resumen: string;
+}
+
 interface TeleprompterStore {
   crmData: CRMData;
   setCrmData: (data: Partial<CRMData>) => void;
@@ -54,8 +62,8 @@ interface TeleprompterStore {
   incrementCallDuration: () => void;
   resetCallDuration: () => void;
 
-  activeToolTab: 'objeciones' | 'faq';
-  setActiveToolTab: (tab: 'objeciones' | 'faq') => void;
+  activeToolTab: 'objeciones' | 'faq' | 'transcripcion';
+  setActiveToolTab: (tab: 'objeciones' | 'faq' | 'transcripcion') => void;
 
   activeObjection: string | null;
   setActiveObjection: (id: string | null) => void;
@@ -68,6 +76,15 @@ interface TeleprompterStore {
 
   confirmingReset: boolean;
   setConfirmingReset: (v: boolean) => void;
+
+  transcript: string;
+  addToTranscript: (text: string) => void;
+  clearTranscript: () => void;
+
+  analysis: CallAnalysis | null;
+  isAnalyzing: boolean;
+  setAnalysis: (analysis: CallAnalysis | null) => void;
+  setIsAnalyzing: (v: boolean) => void;
 
   toast: Toast | null;
   showToast: (message: string, type?: Toast['type']) => void;
@@ -145,6 +162,16 @@ export const useTeleprompterStore = create<TeleprompterStore>()(
       confirmingReset: false,
       setConfirmingReset: (v) => set({ confirmingReset: v }),
 
+      transcript: '',
+      addToTranscript: (text) =>
+        set((state) => ({ transcript: state.transcript + text })),
+      clearTranscript: () => set({ transcript: '' }),
+
+      analysis: null,
+      isAnalyzing: false,
+      setAnalysis: (analysis) => set({ analysis }),
+      setIsAnalyzing: (v) => set({ isAnalyzing: v }),
+
       toast: null,
       showToast: (message, type = 'success') => {
         set({ toast: { message, type } });
@@ -165,6 +192,9 @@ export const useTeleprompterStore = create<TeleprompterStore>()(
           activeFaq: null,
           isMobileToolsOpen: false,
           confirmingReset: false,
+          transcript: '',
+          analysis: null,
+          isAnalyzing: false,
           toast: null,
         }),
     }),
@@ -178,6 +208,8 @@ export const useTeleprompterStore = create<TeleprompterStore>()(
         step: state.step,
         callDuration: state.callDuration,
         activeToolTab: state.activeToolTab,
+        transcript: state.transcript,
+        analysis: state.analysis,
       }),
     }
   )

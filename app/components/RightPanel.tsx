@@ -4,6 +4,7 @@ import { Shield, X, ChevronRight } from 'lucide-react';
 import { useTeleprompterStore } from '@/lib/store';
 import { objecionesData } from '@/lib/objeciones';
 import { faqData } from '@/lib/faq';
+import { Transcriptor } from './Transcriptor';
 
 export function RightPanel() {
   const {
@@ -44,29 +45,30 @@ export function RightPanel() {
       </div>
 
       <div className="flex border-b border-slate-200">
-        <button
-          onClick={() => setActiveToolTab('objeciones')}
-          className={`flex-1 py-3 text-sm font-bold transition ${
-            activeToolTab === 'objeciones'
-              ? 'border-b-2 border-indigo-600 text-indigo-700 bg-indigo-50'
-              : 'text-slate-500 hover:bg-slate-50'
-          }`}
-        >
-          🛡️ Objeciones (REA)
-        </button>
-        <button
-          onClick={() => setActiveToolTab('faq')}
-          className={`flex-1 py-3 text-sm font-bold transition ${
-            activeToolTab === 'faq'
-              ? 'border-b-2 border-indigo-600 text-indigo-700 bg-indigo-50'
-              : 'text-slate-500 hover:bg-slate-50'
-          }`}
-        >
-          ❓ FAQ
-        </button>
+        {([
+          { key: 'objeciones', label: '🛡️ REA' },
+          { key: 'faq', label: '❓ FAQ' },
+          { key: 'transcripcion', label: '🎙️ Transcripción' },
+        ] as const).map(({ key, label }) => (
+          <button
+            key={key}
+            onClick={() => setActiveToolTab(key)}
+            className={`flex-1 py-3 text-xs font-bold transition ${
+              activeToolTab === key
+                ? 'border-b-2 border-indigo-600 text-indigo-700 bg-indigo-50'
+                : 'text-slate-500 hover:bg-slate-50'
+            }`}
+          >
+            {label}
+          </button>
+        ))}
       </div>
 
-      <div className="flex-1 overflow-y-auto p-4 bg-slate-50">
+      <div className="flex-1 overflow-y-auto bg-slate-50 flex flex-col">
+        {activeToolTab === 'transcripcion' && <Transcriptor />}
+
+        {activeToolTab !== 'transcripcion' && (
+        <div className="p-4 flex-1">
         {activeToolTab === 'objeciones' && (
           <div className="animate-fade-in space-y-4">
             <div className="card-base flex items-center justify-between">
@@ -176,6 +178,8 @@ export function RightPanel() {
               </div>
             ))}
           </div>
+        )}
+        </div>
         )}
       </div>
     </div>

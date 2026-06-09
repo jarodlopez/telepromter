@@ -1,9 +1,10 @@
 'use client';
 import React from 'react';
-import { Settings, CheckSquare, Copy } from 'lucide-react';
+import { Settings, CheckSquare, Copy, BrainCircuit } from 'lucide-react';
 import { useTeleprompterStore } from '@/lib/store';
 import { getSeguimientoText } from '@/lib/scripts';
 import { GuiaOperativa } from '../ui/GuiaOperativa';
+import { PostCallAnalysis } from '../PostCallAnalysis';
 
 function formatTime(seconds: number): string {
   const m = Math.floor(seconds / 60).toString().padStart(2, '0');
@@ -23,9 +24,36 @@ export function Step6() {
     showToast,
     confirmingReset,
     setConfirmingReset,
+    transcript,
+    analysis,
+    setAnalysis,
+    isAnalyzing,
+    setIsAnalyzing,
   } = useTeleprompterStore();
 
   const isLongTrack = crmData.tipoLead === 'longtrack';
+
+  const analizarLlamada = async () => {
+    setIsAnalyzing(true);
+    setAnalysis(null);
+    try {
+      const res = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ transcript, crmData, callData, callDuration }),
+      });
+      const data = await res.json();
+      if (data.error) {
+        showToast(data.error, 'error');
+      } else {
+        setAnalysis(data);
+      }
+    } catch {
+      showToast('Error al conectar con el análisis IA. Verifica tu conexión.', 'error');
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
 
   const generarNota = () => {
     const nota = `--- AUDITORÍA: LLAMADA MULTIMONEY ---
@@ -110,6 +138,15 @@ ${isLongTrack ? `✅ CURP Validada: ${callData.curpValidada ? 'Sí' : 'Pendiente
           <Copy className="w-6 h-6" /> Copiar Nota Estructurada
         </button>
 
+        <button
+          onClick={analizarLlamada}
+          disabled={isAnalyzing}
+          className="w-full mt-3 bg-violet-600 hover:bg-violet-500 disabled:opacity-60 text-white font-bold py-3 px-4 rounded-xl flex justify-center items-center gap-2 transition text-sm"
+        >
+          <BrainCircuit className="w-5 h-5" />
+          {isAnalyzing ? 'Analizando...' : analysis ? 'Re-analizar con IA' : 'Analizar llamada con IA'}
+        </button>
+
         {confirmingReset ? (
           <div className="mt-4 bg-slate-800 rounded-xl p-4 text-center">
             <p className="text-slate-300 font-medium mb-3 text-sm">
@@ -139,6 +176,8 @@ ${isLongTrack ? `✅ CURP Validada: ${callData.curpValidada ? 'Sí' : 'Pendiente
           </button>
         )}
       </div>
+
+      <PostCallAnalysis />
     </div>
   );
 }
