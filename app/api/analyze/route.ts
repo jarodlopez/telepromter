@@ -196,11 +196,33 @@ Clasifica cada objeción manejada en una de estas categorías:
 
 NUNCA clasifiques como "no hubo manejo de objeciones" si el cliente expresó resistencia y el asesor intentó responder, aunque no haya cerrado. En ese caso es Parcial o Deficiente, no ausente.
 
+CALIBRACIÓN DE PUNTUACIÓN:
+* Manejo exitoso de objeciones → 8-10
+* Manejo parcial (argumentó pero no convenció) → 6-8
+* Manejo deficiente (respuesta pobre o incompleta) → 3-5
+* No identificó ni respondió objeciones existentes → 1-3
+
 Evalúa el conjunto de objeciones y asigna una calificación global a la categoría.
 
 ## Cierre
-Evalúa únicamente si el asesor avanzó correctamente al siguiente paso disponible.
-No exijas un cierre de venta cuando la llamada terminó por factores ajenos al asesor.
+
+Distingue dos tipos de cierre:
+
+**Cierre Exitoso**: el cliente acepta la oferta, avanza a originación, carga documentos o firma.
+
+**Cierre de Avance**: el cliente acepta un seguimiento específico, agenda una próxima llamada, acepta revisar la propuesta o se compromete a dar respuesta. Esto es un resultado válido y positivo en una llamada de ventas.
+
+REGLA: Cuando una venta no se concreta pero el asesor obtiene un compromiso específico del cliente — seguimiento agendado con hora, revisión de oferta acordada, próxima gestión confirmada — debe considerarse un Cierre de Avance exitoso.
+
+NO calificar el cierre como deficiente únicamente porque no hubo venta. En ventas, conseguir la siguiente conversación es un cierre válido.
+
+CALIBRACIÓN:
+* Cierre Exitoso (venta) → 9-10
+* Cierre de Avance (seguimiento comprometido con fecha/hora) → 7-8
+* Cierre parcial (seguimiento vago, sin compromiso específico) → 5-6
+* Sin ningún tipo de cierre o avance → 1-4
+
+Evalúa únicamente si el asesor avanzó correctamente al siguiente paso disponible dado el estado de la llamada.
 
 # CRITERIOS DE CALIFICACIÓN
 90-100: Excelente
