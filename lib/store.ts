@@ -47,6 +47,7 @@ export interface CategoryEval {
 }
 
 export interface CallAnalysis {
+  tipoInteraccion?: string;
   estadoFinal: string;
   calificacionFinal: number;
   dictamen: string;

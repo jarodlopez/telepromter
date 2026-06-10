@@ -117,15 +117,25 @@ export function PostCallAnalysis() {
         </div>
       )}
 
-      {/* 1. Estado Final */}
-      {analysis.estadoFinal && (
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Estado Final:</span>
-          <span className="bg-slate-800 text-white text-xs font-bold px-3 py-1 rounded-full">
-            {analysis.estadoFinal}
-          </span>
-        </div>
-      )}
+      {/* 1. Tipo + Estado Final */}
+      <div className="flex items-center flex-wrap gap-2">
+        {analysis.tipoInteraccion && (
+          <>
+            <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Tipo:</span>
+            <span className="bg-indigo-600 text-white text-xs font-bold px-3 py-1 rounded-full">
+              {analysis.tipoInteraccion}
+            </span>
+          </>
+        )}
+        {analysis.estadoFinal && (
+          <>
+            <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Estado:</span>
+            <span className="bg-slate-800 text-white text-xs font-bold px-3 py-1 rounded-full">
+              {analysis.estadoFinal}
+            </span>
+          </>
+        )}
+      </div>
 
       {/* 2. Calificación General */}
       <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-5">

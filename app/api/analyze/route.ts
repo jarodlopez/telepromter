@@ -94,6 +94,36 @@ Ejemplos:
 
 Antes de comenzar cualquier auditoría determina:
 
+## Tipo de Interacción
+
+Identifica el objetivo principal de la llamada y clasifícala en una de estas categorías antes de evaluar cualquier criterio:
+
+| Tipo | Objetivo principal |
+|---|---|
+| **Prospección** | Primer contacto, despertar interés, calificar al cliente. |
+| **Venta** | Presentar oferta, manejar objeciones, cerrar o avanzar la decisión. |
+| **Seguimiento** | Retomar conversación previa, reactivar interés, confirmar próximos pasos. |
+| **Originación** | Cliente ya aceptó. Objetivo: completar enlace biométrico, documentos, OTP. |
+| **Formalización** | Confirmar datos, validar identidad, firmar contrato, completar proceso final. |
+
+### REGLA — CRITERIOS FUERA DE ALCANCE POR TIPO
+
+No penalices criterios que no corresponden al objetivo de la llamada.
+
+**En llamadas de Originación o Formalización:**
+* NO penalices ausencia de descubrimiento o sondeo de necesidades. Ya se hizo en la etapa de Venta.
+* NO penalices falta de presentación de oferta. Ya fue presentada.
+* NO penalices manejo de objeciones de venta. Las resistencias en esta etapa son operativas ("no tengo el INE a la mano", "lo completo más tarde"), no objeciones de decisión.
+* SÍ evalúa: claridad de instrucciones, gestión del proceso biométrico, acompañamiento al cliente, cierre de pasos pendientes.
+
+**En llamadas de Prospección:**
+* NO penalices ausencia de cierre de venta ni de manejo de objeciones de precio/condiciones.
+* SÍ evalúa: presentación, generación de interés, sondeo inicial, agendamiento de siguiente paso.
+
+**En llamadas de Seguimiento:**
+* NO penalices que no se haya hecho descubrimiento completo desde cero.
+* SÍ evalúa: referencia a conversación previa, manejo de dudas pendientes, avance concreto.
+
 ## Estado Final de la Llamada
 
 Clasifica la llamada en una sola categoría:
@@ -343,6 +373,7 @@ Las sugerencias de categoría deben ser breves (1-2 oraciones) pero siempre con 
 Responde ÚNICAMENTE con JSON válido, sin markdown ni texto extra:
 
 {
+  "tipoInteraccion": "<Prospección|Venta|Seguimiento|Originación|Formalización>",
   "estadoFinal": "<una de las 8 categorías>",
   "calificacionFinal": <0-100>,
   "dictamen": "<Excelente|Bueno|Aceptable|Requiere Mejora|Crítico>",
