@@ -471,8 +471,9 @@ ${
 
     const content = completion.choices[0].message.content ?? '{}';
     return NextResponse.json(JSON.parse(content));
-  } catch (err) {
-    console.error('OpenAI analyze error:', err);
-    return NextResponse.json({ error: 'Error al analizar la llamada.' }, { status: 500 });
+  } catch (err: any) {
+    const detail = err?.error?.message ?? err?.message ?? String(err);
+    console.error('OpenAI analyze error:', detail);
+    return NextResponse.json({ error: `Error al analizar: ${detail}` }, { status: 500 });
   }
 }

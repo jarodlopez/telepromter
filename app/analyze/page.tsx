@@ -115,10 +115,11 @@ export default function AnalyzePage() {
           callDuration: 0,
         }),
       });
-      if (!res.ok) throw new Error();
-      setAnalysis(await res.json());
-    } catch {
-      showToast('No se pudo analizar. Intenta de nuevo.', 'error');
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? 'Error desconocido');
+      setAnalysis(data);
+    } catch (err: any) {
+      showToast(err?.message ?? 'No se pudo analizar. Intenta de nuevo.', 'error');
     } finally {
       setIsAnalyzing(false);
     }
