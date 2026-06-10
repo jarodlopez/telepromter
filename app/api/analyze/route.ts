@@ -111,10 +111,12 @@ Identifica el objetivo principal de la llamada y clasifícala en una de estas ca
 No penalices criterios que no corresponden al objetivo de la llamada.
 
 **En llamadas de Originación o Formalización:**
-* NO penalices ausencia de descubrimiento o sondeo de necesidades. Ya se hizo en la etapa de Venta.
+* NO penalices ausencia de descubrimiento, sondeo de necesidades ni exploración de urgencia. Esas etapas corresponden a llamadas de Venta previas y pueden haberse completado antes.
 * NO penalices falta de presentación de oferta. Ya fue presentada.
+* NO penalices por no preguntar motivo del crédito, destino del dinero, ingresos ni endeudamiento. Son criterios de Venta, no de Originación.
 * NO penalices manejo de objeciones de venta. Las resistencias en esta etapa son operativas ("no tengo el INE a la mano", "lo completo más tarde"), no objeciones de decisión.
-* SÍ evalúa: claridad de instrucciones, gestión del proceso biométrico, acompañamiento al cliente, cierre de pasos pendientes.
+* SÍ evalúa: claridad de instrucciones, conocimiento del producto al responder preguntas informativas, gestión del proceso biométrico, acompañamiento al cliente, cierre de pasos pendientes.
+* ADAPTA las categorías: en lugar de "Descubrimiento", evalúa "Validación de datos e identidad". Aplica el criterio relevante al objetivo real de la llamada.
 
 **En llamadas de Prospección:**
 * NO penalices ausencia de cierre de venta ni de manejo de objeciones de precio/condiciones.
@@ -256,17 +258,42 @@ Penaliza solo si el asesor no argumentó ni defendió la oferta parcial.
 
 ## Manejo de Objeciones
 
-Una objeción existe cuando el cliente expresa duda, resistencia, preocupación, inconformidad, comparación, necesidad de pensar o cuestiona la conveniencia de la oferta — independientemente de cómo lo exprese.
+### DISTINCIÓN CRÍTICA: Objeción vs Duda Informativa
 
-**Señales de objeción que debes detectar:**
+Antes de evaluar manejo de objeciones, clasifica cada intervención del cliente:
+
+**Objeción** — el cliente expresa RESISTENCIA AL AVANCE:
+* "Está caro." / "No me conviene." / "Es mucho."
+* "Lo voy a pensar." / "Más adelante." / "No es el momento."
+* "Encontré otra opción." / "Me ofrecieron mejor tasa."
+* "No quiero avanzar." / "No me interesa."
+* "Tengo que hablar con mi esposa/familia."
+* Cualquier señal de duda sobre si continuar o no.
+
+**Duda Informativa** — el cliente busca ENTENDER LAS CONDICIONES (no se opone a avanzar):
+* "¿Cuál es la tasa?" / "¿Cómo se calcula el interés?"
+* "¿Cuánto pago mensual?" / "¿Cuánto sería en pesos?"
+* "¿Cuándo me hacen el descuento?" / "¿Cómo funcionan los cargos?"
+* "¿Qué pasa si pago anticipado?" / "¿Cuándo me depositan?"
+
+**REGLA:** Las dudas informativas NO se evalúan dentro de Manejo de Objeciones.
+
+Si el asesor responde de forma incorrecta, confusa o incompleta a una duda informativa, ese error debe descontarse en la categoría que corresponda:
+* Conocimiento del producto → si desconoce las condiciones del crédito.
+* Presentación de Oferta → si no supo explicar claramente los términos.
+* Apertura o Comunicación → si la respuesta fue confusa o desordenada.
+
+Nunca penalices Manejo de Objeciones cuando no existe resistencia real del cliente.
+
+**Señales de objeción que SÍ debes detectar:**
 * "Lo voy a pensar." / "Más adelante." / "No es el momento."
 * "Traigo otras cosas." / "Lo voy a revisar."
 * "No sé si me conviene." / "Es mucho." / "Es poco."
 * "Tengo que hablar con mi esposa/familia."
 * "Ya tengo otro crédito." / "Me ofrecieron mejor tasa en otro lado."
-* Cualquier señal de duda, pausa evaluativa o falta de compromiso.
+* Cualquier señal de duda, pausa evaluativa o falta de compromiso de avanzar.
 
-Detecta automáticamente todas las objeciones presentes en la transcripción.
+Detecta automáticamente todas las objeciones reales presentes en la transcripción.
 
 Si el asesor responde intentando justificar la oferta, resolver la preocupación o dar argumentos, ESO ES manejo de objeción, aunque no logre superarla completamente.
 
