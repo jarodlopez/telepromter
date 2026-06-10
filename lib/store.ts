@@ -43,6 +43,7 @@ export interface EvidencedPoint {
 export interface CategoryEval {
   calificacion: number;
   hallazgos: string;
+  sugerencia?: string;
 }
 
 export interface CallAnalysis {

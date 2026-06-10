@@ -51,6 +51,12 @@ const CATEGORY_LABEL: Record<string, string> = {
 function CategoryCard({ id, data }: { id: string; data: any }) {
   const pct = data.calificacion * 10;
   const barColor = pct >= 80 ? 'bg-emerald-500' : pct >= 60 ? 'bg-amber-500' : 'bg-red-500';
+  const sugerenciaStyle = pct >= 80
+    ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
+    : pct >= 60
+    ? 'bg-amber-50 border-amber-200 text-amber-800'
+    : 'bg-red-50 border-red-200 text-red-800';
+  const iconStyle = pct >= 80 ? 'text-emerald-500' : pct >= 60 ? 'text-amber-500' : 'text-red-500';
   return (
     <div className="bg-white border border-slate-200 rounded-xl p-4 space-y-2">
       <div className="flex items-center justify-between">
@@ -71,6 +77,12 @@ function CategoryCard({ id, data }: { id: string; data: any }) {
         <div className={`${barColor} h-1.5 rounded-full transition-all duration-700`} style={{ width: `${pct}%` }} />
       </div>
       <p className="text-xs text-slate-600 leading-relaxed">{data.hallazgos}</p>
+      {data.sugerencia && (
+        <p className={`text-xs border rounded px-2 py-1.5 flex gap-1.5 items-start leading-relaxed ${sugerenciaStyle}`}>
+          <Lightbulb className={`w-3 h-3 flex-shrink-0 mt-0.5 ${iconStyle}`} />
+          {data.sugerencia}
+        </p>
+      )}
     </div>
   );
 }

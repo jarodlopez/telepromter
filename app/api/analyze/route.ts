@@ -313,14 +313,30 @@ Cada hallazgo debe incluir evidencia textual.
 Cumple — cita directa: "Asesor: ¿Cuántas tarjetas quieres liquidar?"
 Incumple — indicación de ausencia: "No se identificó pregunta sobre fecha esperada de depósito."
 
-# SUGERENCIAS POR OPORTUNIDAD DE MEJORA
+# SUGERENCIAS — REGLA GENERAL
 
-Cada oportunidad de mejora debe incluir una sugerencia concreta de lo que el asesor pudo haber hecho en ese momento específico de la llamada.
+El objetivo del análisis NO es solo identificar dónde falló el asesor. El objetivo es que el asesor sepa exactamente qué hacer diferente en futuras interacciones.
+
+Por eso, TODA evaluación debe incluir sugerencias concretas y accionables:
+
+## Sugerencias en Oportunidades de Mejora
+
+Cada oportunidad de mejora debe incluir una sugerencia concreta de lo que el asesor pudo haber hecho en ese momento específico.
 
 Las sugerencias deben ser ejemplos de diálogo o frases accionables, no generalidades.
 
 Incorrecto: "Debe mejorar el manejo de objeciones."
 Correcto: "Cuando el cliente dijo 'lo voy a pensar', el asesor pudo preguntar: '¿Hay algo específico de la propuesta que no te convence en este momento?' para descubrir la objeción real."
+
+## Sugerencias en Cada Categoría
+
+Cada categoría evaluada debe incluir también una sugerencia de mejora, incluso si la calificación fue alta.
+
+Si la calificación fue alta (8-10): la sugerencia debe indicar cómo llevar esa habilidad al siguiente nivel o mantenerla consistentemente.
+Si la calificación fue media (5-7): la sugerencia debe indicar el ajuste específico con un ejemplo de diálogo.
+Si la calificación fue baja (1-4): la sugerencia debe mostrar cómo debió manejarse esa parte de la llamada con un ejemplo completo.
+
+Las sugerencias de categoría deben ser breves (1-2 oraciones) pero siempre con un ejemplo de frase o acción concreta.
 
 # FORMATO DE SALIDA
 
@@ -338,13 +354,13 @@ Responde ÚNICAMENTE con JSON válido, sin markdown ni texto extra:
     { "punto": "<descripción>", "evidencia": "<cita o indicación de ausencia>", "sugerencia": "<frase o acción concreta que el asesor pudo haber hecho>" }
   ],
   "categorias": {
-    "apertura":           { "calificacion": <0-10>, "hallazgos": "<texto con evidencia>" },
-    "descubrimiento":     { "calificacion": <0-10>, "hallazgos": "<texto con evidencia>" },
-    "escuchaActiva":      { "calificacion": <0-10>, "hallazgos": "<texto con evidencia>" },
-    "empatia":            { "calificacion": <0-10>, "nivel": "<Excelente|Adecuada|Insuficiente|Ausente>", "hallazgos": "<texto con evidencia>" },
-    "presentacionOferta": { "calificacion": <0-10>, "hallazgos": "<texto con evidencia>" },
-    "manejoObjeciones":   { "calificacion": <0-10>, "hallazgos": "<lista de objeciones detectadas con clasificación Exitoso/Parcial/Deficiente y evidencia>" },
-    "cierre":             { "calificacion": <0-10>, "hallazgos": "<texto con evidencia>" }
+    "apertura":           { "calificacion": <0-10>, "hallazgos": "<texto con evidencia>", "sugerencia": "<qué pudo hacer mejor o cómo mantener el nivel, con ejemplo de frase>" },
+    "descubrimiento":     { "calificacion": <0-10>, "hallazgos": "<texto con evidencia>", "sugerencia": "<qué pudo hacer mejor o cómo mantener el nivel, con ejemplo de frase>" },
+    "escuchaActiva":      { "calificacion": <0-10>, "hallazgos": "<texto con evidencia>", "sugerencia": "<qué pudo hacer mejor o cómo mantener el nivel, con ejemplo de frase>" },
+    "empatia":            { "calificacion": <0-10>, "nivel": "<Excelente|Adecuada|Insuficiente|Ausente>", "hallazgos": "<texto con evidencia>", "sugerencia": "<qué pudo hacer mejor o cómo mantener el nivel, con ejemplo de frase>" },
+    "presentacionOferta": { "calificacion": <0-10>, "hallazgos": "<texto con evidencia>", "sugerencia": "<qué pudo hacer mejor o cómo mantener el nivel, con ejemplo de frase>" },
+    "manejoObjeciones":   { "calificacion": <0-10>, "hallazgos": "<lista de objeciones detectadas con clasificación Exitoso/Parcial/Deficiente y evidencia>", "sugerencia": "<qué pudo hacer mejor o cómo mantener el nivel, con ejemplo de frase>" },
+    "cierre":             { "calificacion": <0-10>, "hallazgos": "<texto con evidencia>", "sugerencia": "<qué pudo hacer mejor o cómo mantener el nivel, con ejemplo de frase>" }
   },
   "riesgosDetectados": ["<riesgo con evidencia>"],
   "coaching": "<párrafo específico y accionable con ejemplos de diálogo>",
