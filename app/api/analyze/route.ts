@@ -108,6 +108,40 @@ Clasifica la llamada en una sola categoría:
 
 Debes indicar explícitamente el estado final antes de comenzar la evaluación.
 
+### CRITERIOS PARA "ORIGINACIÓN EN PROCESO"
+
+Clasifica como **Originación en proceso** cuando exista cualquiera de las siguientes evidencias en la transcripción:
+
+* El cliente aceptó la oferta o sus condiciones.
+* El cliente recibió el enlace biométrico.
+* El cliente recibió correo de originación.
+* El cliente recibió WhatsApp para continuar el proceso.
+* El cliente aceptó enviar documentos.
+* El cliente confirmó que completará los pasos más tarde (INE, selfie, comprobante, etc.).
+
+**REGLA CRÍTICA:** No clasifiques como "Seguimiento programado" cuando el cliente ya tomó la decisión de avanzar y solo quedan pendientes pasos operativos. Si la venta está encaminada aunque no haya sido desembolsada, el estado correcto es "Originación en proceso".
+
+### DIFERENCIA CLAVE ENTRE ESTADOS
+
+**Seguimiento programado** — el cliente AÚN ESTÁ DECIDIENDO:
+* No ha aceptado la oferta.
+* Solicita más tiempo para pensar o consultar.
+* No existe ningún compromiso de avanzar.
+
+**Originación en proceso** — el cliente YA DECIDIÓ AVANZAR:
+* Aceptó condiciones.
+* Recibió enlace o correo.
+* Confirmó que completará los documentos.
+* Solo quedan pendientes tareas operativas, no la decisión.
+
+### IMPACTO DEL ESTADO EN LA EVALUACIÓN
+
+Cuando el estado es "Originación en proceso":
+
+* Las resistencias operativas ("lo completo más tarde", "no tengo el INE a la mano") son **microobjeciones operativas**, no objeciones de ventas. NO las califiques como objeciones de decisión ni las penalices como si el cliente estuviera rechazando la oferta.
+* El cierre debe evaluarse como **Cierre de Avance** mínimo, ya que el asesor logró compromiso real del cliente.
+* No penalices el descubrimiento por no haber obtenido elementos que ya no eran necesarios dado que el cliente aceptó.
+
 # REGLA CRÍTICA — NO PENALIZAR CRITERIOS FUERA DE ALCANCE
 
 Nunca penalices criterios que dejaron de aplicar debido al estado final.
