@@ -47,90 +47,96 @@ export interface PreguntaSondeo {
 export const getSondeoPreguntas = (
   tipoLead: 'upper' | 'gancho' | 'expirado' | 'longtrack'
 ): PreguntaSondeo[] => {
+  // REGLA DE ORO: tasa, monto, plazo y cuota los define el sistema. El perfilamiento
+  // NO sirve para negociar números, sino para obtener datos suficientes que permitan
+  // rebatir objeciones con la información del cliente, adaptar el pitch a su necesidad
+  // y avanzar al siguiente paso del proceso.
   if (tipoLead === 'gancho' || tipoLead === 'expirado') {
+    // Preguntas a perfilar oficiales para reactivación (Gancho / Expirados).
     return [
       {
-        objetivo: 'Motivo de no avanzar antes',
+        objetivo: 'Motivo de no avanzar',
         pregunta:
-          'La vez pasada dejaste tu oferta en pausa. ¿Qué fue lo que en ese momento te hizo no avanzar? Lo que me digas me ayuda a que hoy sea diferente.',
+          'En tu contacto anterior decidiste no continuar con la oferta. ¿Qué fue lo que te detuvo en ese momento?',
         tecnica:
-          'Identifica la objeción raíz previa. No la repitas en el pitch: resuélvela de entrada.',
+          'Identifica la objeción raíz previa y resuélvela de entrada, antes de que reaparezca en el cierre.',
       },
       {
         objetivo: 'Estatus de la necesidad',
         pregunta:
-          '¿Lograste resolver por otro lado eso para lo que buscabas el crédito, o sigue pendiente?',
+          '¿Lograste resolver por otro medio el gasto o la deuda para la que solicitaste el crédito, o sigue pendiente?',
         tecnica:
-          'Si sigue pendiente, tienes urgencia viva. Si ya lo resolvió, pivota a fondo de respaldo o nuevo proyecto.',
+          'Si continúa pendiente, la urgencia sigue viva. Si ya lo resolvió, pivota hacia fondo de respaldo o un nuevo objetivo.',
       },
       {
-        objetivo: 'Nueva necesidad / urgencia',
+        objetivo: 'Inconveniente con otras instituciones',
         pregunta:
-          'De ese tiempo para acá, ¿te ha surgido algún otro gasto o proyecto que te esté generando presión?',
+          '¿Tuviste algún inconveniente para que te aprobaran un crédito en otra institución?',
         tecnica:
-          'Reabre el dolor financiero actual: es tu anclaje emocional para el cierre.',
+          'Revela fricción con la competencia. Contrasta con tu aprobación ya lista y el proceso 100% en línea.',
       },
       {
-        objetivo: 'Ocupación e ingresos vigentes',
+        objetivo: 'Nuevo gasto / estrés financiero',
         pregunta:
-          'Para actualizar tu oferta a tu situación de hoy, ¿sigues en la misma actividad y con ingresos parecidos, o cambió algo?',
+          'De ese tiempo a la fecha, ¿ha surgido algún otro gasto que te esté generando presión financiera?',
         tecnica:
-          'Refresca ocupación e ingresos sin interrogar desde cero. Si mejoró, justifica un mejor monto.',
+          'Reactiva el dolor financiero vigente: es el anclaje para adaptar el pitch y justificar avanzar hoy.',
       },
       {
-        objetivo: 'Otras instituciones',
+        objetivo: 'Nivel de urgencia',
         pregunta:
-          '¿Has estado viendo esta necesidad con alguien más mientras tanto?',
+          '¿Qué tan urgente es para ti resolver esta necesidad en este momento?',
         tecnica:
-          'Detecta competencia activa y te prepara para rebatir la comparación.',
+          'Calibra la urgencia. A mayor urgencia, refuerza la inmediatez del depósito para avanzar al siguiente paso.',
       },
     ];
   }
 
-  // upper y longtrack comparten el mismo sondeo financiero consultivo.
-  // Orden top performer: de lo ligero a lo sensible, cada pregunta ligada a un beneficio para el cliente.
+  // Preguntas a perfilar oficiales (Upper / Long Track), ordenadas de lo menos
+  // sensible a lo más sensible. Cada técnica indica cómo se USA el dato:
+  // rebatir objeciones, adaptar el pitch o avanzar. Nunca para mover tasa/monto.
   return [
     {
       objetivo: 'Ocupación actual',
       pregunta:
-        'Para conocerte mejor y armarte algo a tu medida, cuéntame: ¿a qué te dedicas hoy en día?',
+        '¿Cuál es tu actividad laboral actual? ¿Eres empleado, trabajas de forma independiente o tienes negocio propio?',
       tecnica:
-        'Arranca aquí: es la pregunta menos sensible y abre la conversación. Si es independiente, indaga el giro de su negocio.',
+        'Pregunta de apertura, bajo riesgo. Define el origen del ingreso y qué comprobantes se solicitarán en originación. Si es independiente, indaga el giro del negocio.',
     },
     {
       objetivo: 'Ingresos comprobables mensuales',
       pregunta:
-        '¿Y aproximadamente cuánto te ingresa al mes entre todo lo que generas? Te pregunto porque entre más ingreso puedas comprobar, mejor monto y tasa te consigo.',
+        '¿Cuál es tu ingreso mensual comprobable? Puede ser nómina, estados de cuenta o declaración fiscal.',
       tecnica:
-        'Liga el dato sensible a un beneficio directo (mejor monto/tasa). Remata con: "¿lo puedes comprobar con estados de cuenta?".',
+        'Solicita ingresos comprobables, no percibidos. Sirve para calibrar si la cuota del sistema es proporcional y anticipar objeciones de capacidad de pago.',
     },
     {
-      objetivo: 'Fecha y monto esperados de depósito',
+      objetivo: 'Fecha y monto de depósito',
       pregunta:
-        'Para dejarte todo listo a tiempo, ¿para cuándo necesitas el dinero en tu cuenta y de cuánto estaríamos hablando para cubrir lo que tienes en mente?',
+        '¿Para qué fecha requieres la disposición del recurso y qué monto tienes contemplado?',
       tecnica:
-        'Dos pájaros de un tiro: detectas urgencia (para cerrar) y el monto objetivo (para la oferta). Si dice "lo antes posible", refuerza el depósito en 2 horas.',
+        'Mide urgencia (clave para el cierre) y expectativa de monto. Si hay urgencia alta, ancla el depósito en menos de 2 horas para avanzar hoy.',
     },
     {
       objetivo: 'Créditos existentes',
       pregunta:
-        'Para que tu pago mensual quede cómodo y no te apriete, ¿hoy traes algún otro crédito, tarjeta o financiamiento activo? No es para juzgar, es para acomodarte la mejor estructura.',
+        '¿Tienes créditos, tarjetas u otros financiamientos activos en este momento? ¿Cuánto sumas en pagos mensuales actualmente?',
       tecnica:
-        'El "no es para juzgar" baja la guardia. Te revela su capacidad de pago real y abre la puerta a hablar de consolidación.',
+        'Dimensiona capacidad de pago real. Sus propias cifras son el argumento para rebatir "cuota alta" y abrir el caso de consolidación.',
     },
     {
-      objetivo: 'Otras opciones con otras instituciones',
+      objetivo: 'Otras instituciones',
       pregunta:
-        '¿Ya andabas viendo esta opción con algún otro banco o financiera? Lo pregunto para asegurarme de ponerte algo que de verdad valga más la pena que lo que ya tengas sobre la mesa.',
+        '¿Estás gestionando esta necesidad con alguna otra institución financiera en este momento?',
       tecnica:
-        'Mide la competencia y la urgencia. Si dice que sí, anota la institución: te sirve para rebatir la comparación en el cierre.',
+        'Detecta competencia activa. Si compara con otra institución, no discutas la tasa: contrasta tiempos de aprobación y disposición (2 horas vs. días).',
     },
     {
-      objetivo: 'Necesidades adicionales / ampliación',
+      objetivo: 'Necesidades adicionales',
       pregunta:
-        'Además de lo que vas a resolver hoy, ¿hay algún otro proyecto o gasto que tengas en mente para los próximos meses? Así desde hoy te dejo perfilado el camino para una ampliación.',
+        '¿Tienes algún otro proyecto o necesidad financiera en mente para los próximos meses?',
       tecnica:
-        'Cross-sell y siembra la ampliación al 3er pago puntual. Convierte una venta única en relación de largo plazo.',
+        'Habilita segunda necesidad y siembra la ampliación al 3er pago puntual. Convierte la operación en una relación de largo plazo.',
     },
   ];
 };
