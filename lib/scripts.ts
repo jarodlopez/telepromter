@@ -99,44 +99,44 @@ export const getSondeoPreguntas = (
     {
       objetivo: 'Ocupación actual',
       pregunta:
-        'Para ajustar la propuesta a tu perfil, cuéntame: ¿a qué te dedicas actualmente y cómo generas tus ingresos: por nómina, de forma independiente o con un negocio propio?',
+        '¿Cuál es tu actividad laboral actual? ¿Eres empleado, trabajas de forma independiente o tienes negocio propio?',
       tecnica:
-        'Apertura de bajo riesgo. Define el origen del ingreso y qué comprobantes se pedirán en originación; te permite adaptar el discurso a su realidad laboral.',
+        'Pregunta de apertura, bajo riesgo. Define el origen del ingreso y qué comprobantes se solicitarán en originación. Si es independiente, indaga el giro del negocio.',
     },
     {
       objetivo: 'Ingresos comprobables mensuales',
       pregunta:
-        '¿Qué ingreso mensual puedes respaldar con estados de cuenta o recibos? Es el dato que sustenta tu oferta ante el área de riesgo.',
+        '¿Cuál es tu ingreso mensual comprobable? Puede ser nómina, estados de cuenta o declaración fiscal.',
       tecnica:
-        'Pide comprobables, no percibidos. Sustenta la oferta ya pre-aprobada; recuerda: tasa y monto los define el sistema, nunca ofrezcas mejorarlos.',
+        'Solicita ingresos comprobables, no percibidos. Sirve para calibrar si la cuota del sistema es proporcional y anticipar objeciones de capacidad de pago.',
     },
     {
-      objetivo: 'Fecha y monto esperados de depósito',
+      objetivo: 'Fecha y monto de depósito',
       pregunta:
-        '¿Para cuándo necesitas disponer del recurso y qué monto tienes contemplado para cubrir tu objetivo?',
+        '¿Para qué fecha requieres la disposición del recurso y qué monto tienes contemplado?',
       tecnica:
-        'Mide urgencia (insumo del cierre) y expectativa de monto. Ante urgencia alta, ancla el depósito en menos de 2 horas para impulsar el avance.',
+        'Mide urgencia (clave para el cierre) y expectativa de monto. Si hay urgencia alta, ancla el depósito en menos de 2 horas para avanzar hoy.',
     },
     {
       objetivo: 'Créditos existentes',
       pregunta:
-        '¿Tienes hoy otros créditos, tarjetas o financiamientos activos? ¿Qué pago mensual destinas en total a ellos?',
+        '¿Tienes créditos, tarjetas u otros financiamientos activos en este momento? ¿Cuánto sumas en pagos mensuales actualmente?',
       tecnica:
-        'Dimensiona su capacidad de pago y abre la consolidación. Sus propias cifras son tu mejor argumento para rebatir "cuota alta" o "ya tengo deudas".',
+        'Dimensiona capacidad de pago real. Sus propias cifras son el argumento para rebatir "cuota alta" y abrir el caso de consolidación.',
     },
     {
       objetivo: 'Otras instituciones',
       pregunta:
-        '¿Estás evaluando esta necesidad con alguna otra institución en paralelo?',
+        '¿Estás gestionando esta necesidad con alguna otra institución financiera en este momento?',
       tecnica:
-        'Detecta competencia activa. Si compara, no discutas la tasa: contrasta tiempos de respuesta y la inmediatez del depósito.',
+        'Detecta competencia activa. Si compara con otra institución, no discutas la tasa: contrasta tiempos de aprobación y disposición (2 horas vs. días).',
     },
     {
-      objetivo: 'Necesidades adicionales / ampliación',
+      objetivo: 'Necesidades adicionales',
       pregunta:
-        'Además de tu objetivo inmediato, ¿tienes algún otro proyecto o gasto previsto para los próximos meses?',
+        '¿Tienes algún otro proyecto o necesidad financiera en mente para los próximos meses?',
       tecnica:
-        'Habilita venta cruzada y siembra la ampliación disponible al 3er pago puntual; transforma la operación en una relación de largo plazo.',
+        'Habilita segunda necesidad y siembra la ampliación al 3er pago puntual. Convierte la operación en una relación de largo plazo.',
     },
   ];
 };
