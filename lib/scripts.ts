@@ -57,35 +57,35 @@ export const getSondeoPreguntas = (
       {
         objetivo: 'Motivo de no avanzar',
         pregunta:
-          'En tu contacto anterior decidiste no continuar con la oferta. ¿Qué fue lo que te detuvo en ese momento?',
+          'Antes de platicarte lo que tengo hoy para ti, me gustaría entender algo de tu experiencia previa. En tu contacto anterior decidiste no continuar, y eso es totalmente normal. ¿Qué fue lo que te detuvo en ese momento?',
         tecnica:
           'Identifica la objeción raíz previa y resuélvela de entrada, antes de que reaparezca en el cierre.',
       },
       {
         objetivo: 'Estatus de la necesidad',
         pregunta:
-          '¿Lograste resolver por otro medio el gasto o la deuda para la que solicitaste el crédito, o sigue pendiente?',
+          'Te entiendo, gracias por la confianza de contármelo. Y de aquel tema en concreto: ¿lograste resolverlo por otro medio, o ese gasto o deuda sigue pendiente hoy?',
         tecnica:
           'Si continúa pendiente, la urgencia sigue viva. Si ya lo resolvió, pivota hacia fondo de respaldo o un nuevo objetivo.',
       },
       {
         objetivo: 'Inconveniente con otras instituciones',
         pregunta:
-          '¿Tuviste algún inconveniente para que te aprobaran un crédito en otra institución?',
+          'Lo tengo claro. Déjame hacerte una pregunta rápida que me ayuda a entender mejor tu panorama: ¿tuviste algún inconveniente para que te aprobaran un crédito en otra institución?',
         tecnica:
           'Revela fricción con la competencia. Contrasta con tu aprobación ya lista y el proceso 100% en línea.',
       },
       {
         objetivo: 'Nuevo gasto / estrés financiero',
         pregunta:
-          'De ese tiempo a la fecha, ¿ha surgido algún otro gasto que te esté generando presión financiera?',
+          'Perfecto, me queda claro. Y cuéntame, porque las cosas cambian con el tiempo: de aquel momento a la fecha, ¿ha surgido algún otro gasto que te esté generando presión financiera?',
         tecnica:
           'Reactiva el dolor financiero vigente: es el anclaje para adaptar el pitch y justificar avanzar hoy.',
       },
       {
         objetivo: 'Nivel de urgencia',
         pregunta:
-          '¿Qué tan urgente es para ti resolver esta necesidad en este momento?',
+          'Te entiendo perfectamente. Para enfocarnos en lo que de verdad te conviene: ¿qué tan urgente es para ti resolver esta necesidad en este momento?',
         tecnica:
           'Calibra la urgencia. A mayor urgencia, refuerza la inmediatez del depósito para avanzar al siguiente paso.',
       },
@@ -99,42 +99,42 @@ export const getSondeoPreguntas = (
     {
       objetivo: 'Ocupación actual',
       pregunta:
-        '¿Cuál es tu actividad laboral actual? ¿Eres empleado, trabajas de forma independiente o tienes negocio propio?',
+        'Para tener tu expediente completo y darte un buen acompañamiento, cuéntame un poco de ti: ¿cuál es tu actividad laboral actual? ¿Eres empleado, trabajas de forma independiente o tienes un negocio propio?',
       tecnica:
         'Pregunta de apertura, bajo riesgo. Define el origen del ingreso y qué comprobantes se solicitarán en originación. Si es independiente, indaga el giro del negocio.',
     },
     {
       objetivo: 'Ingresos comprobables mensuales',
       pregunta:
-        '¿Cuál es tu ingreso mensual comprobable? Puede ser nómina, estados de cuenta o declaración fiscal.',
+        'Perfecto, gracias. Ahora un dato que el área de riesgo necesita validar: ¿cuál es tu ingreso mensual comprobable? Puede ser por nómina, estados de cuenta o declaración fiscal.',
       tecnica:
         'Solicita ingresos comprobables, no percibidos. Sirve para calibrar si la cuota del sistema es proporcional y anticipar objeciones de capacidad de pago.',
     },
     {
       objetivo: 'Fecha y monto de depósito',
       pregunta:
-        '¿Para qué fecha requieres la disposición del recurso y qué monto tienes contemplado?',
+        'Muy bien. Y para organizar los tiempos de tu proceso, dime: ¿para qué fecha necesitas disponer del recurso y qué monto tienes contemplado?',
       tecnica:
         'Mide urgencia (clave para el cierre) y expectativa de monto. Si hay urgencia alta, ancla el depósito en menos de 2 horas para avanzar hoy.',
     },
     {
       objetivo: 'Créditos existentes',
       pregunta:
-        '¿Tienes créditos, tarjetas u otros financiamientos activos en este momento? ¿Cuánto sumas en pagos mensuales actualmente?',
+        'Entiendo. Te hago otra pregunta que me da un panorama claro de tu situación: ¿tienes créditos, tarjetas u otros financiamientos activos en este momento? ¿Y cuánto sumas hoy en pagos mensuales?',
       tecnica:
         'Dimensiona capacidad de pago real. Sus propias cifras son el argumento para rebatir "cuota alta" y abrir el caso de consolidación.',
     },
     {
       objetivo: 'Otras instituciones',
       pregunta:
-        '¿Estás gestionando esta necesidad con alguna otra institución financiera en este momento?',
+        'Gracias por la confianza. Una más, para asegurarme de darte la mejor atención: ¿estás gestionando esta necesidad con alguna otra institución financiera en este momento?',
       tecnica:
         'Detecta competencia activa. Si compara con otra institución, no discutas la tasa: contrasta tiempos de aprobación y disposición (2 horas vs. días).',
     },
     {
       objetivo: 'Necesidades adicionales',
       pregunta:
-        '¿Tienes algún otro proyecto o necesidad financiera en mente para los próximos meses?',
+        'Excelente, ya tengo un panorama muy completo. Y para cerrar este punto: además de lo de hoy, ¿tienes algún otro proyecto o necesidad financiera en mente para los próximos meses?',
       tecnica:
         'Habilita segunda necesidad y siembra la ampliación al 3er pago puntual. Convierte la operación en una relación de largo plazo.',
     },
