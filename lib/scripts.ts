@@ -38,27 +38,100 @@ export const getBeneficiosText = (): string => {
 
 // ─── PREGUNTAS DE SONDEO ──────────────────────────────────────────────────────
 
+export interface PreguntaSondeo {
+  objetivo: string; // qué dato perfilamos (etiqueta corta)
+  pregunta: string; // guion natural que el asesor lee al cliente
+  tecnica: string;  // por qué funciona / cómo mantenerla no intrusiva
+}
+
 export const getSondeoPreguntas = (
   tipoLead: 'upper' | 'gancho' | 'expirado' | 'longtrack'
-): string[] => {
+): PreguntaSondeo[] => {
   if (tipoLead === 'gancho' || tipoLead === 'expirado') {
     return [
-      '¿Cuál fue el motivo para decidir no avanzar con su oferta la vez anterior?',
-      '¿Logró cubrir la deuda o el gasto para el cual solicitó el crédito?',
-      '¿Tuvo algún inconveniente para aprobación de su crédito con otras instituciones?',
-      '¿En este tiempo ha tenido algún otro gasto que le esté generando estrés financiero?',
-      '¿Qué tan urgente es para usted resolver esta necesidad financiera?',
+      {
+        objetivo: 'Motivo de no avanzar antes',
+        pregunta:
+          'La vez pasada dejaste tu oferta en pausa. ¿Qué fue lo que en ese momento te hizo no avanzar? Lo que me digas me ayuda a que hoy sea diferente.',
+        tecnica:
+          'Identifica la objeción raíz previa. No la repitas en el pitch: resuélvela de entrada.',
+      },
+      {
+        objetivo: 'Estatus de la necesidad',
+        pregunta:
+          '¿Lograste resolver por otro lado eso para lo que buscabas el crédito, o sigue pendiente?',
+        tecnica:
+          'Si sigue pendiente, tienes urgencia viva. Si ya lo resolvió, pivota a fondo de respaldo o nuevo proyecto.',
+      },
+      {
+        objetivo: 'Nueva necesidad / urgencia',
+        pregunta:
+          'De ese tiempo para acá, ¿te ha surgido algún otro gasto o proyecto que te esté generando presión?',
+        tecnica:
+          'Reabre el dolor financiero actual: es tu anclaje emocional para el cierre.',
+      },
+      {
+        objetivo: 'Ocupación e ingresos vigentes',
+        pregunta:
+          'Para actualizar tu oferta a tu situación de hoy, ¿sigues en la misma actividad y con ingresos parecidos, o cambió algo?',
+        tecnica:
+          'Refresca ocupación e ingresos sin interrogar desde cero. Si mejoró, justifica un mejor monto.',
+      },
+      {
+        objetivo: 'Otras instituciones',
+        pregunta:
+          '¿Has estado viendo esta necesidad con alguien más mientras tanto?',
+        tecnica:
+          'Detecta competencia activa y te prepara para rebatir la comparación.',
+      },
     ];
   }
 
-  // upper y longtrack comparten el mismo sondeo financiero
+  // upper y longtrack comparten el mismo sondeo financiero consultivo.
+  // Orden top performer: de lo ligero a lo sensible, cada pregunta ligada a un beneficio para el cliente.
   return [
-    'Conocer la fecha y monto esperados de depósito.',
-    'Indagar sobre créditos existentes del cliente.',
-    'Averiguar si ha buscado otras opciones con diferentes instituciones.',
-    'Explorar opciones adicionales de crédito que pueda necesitar.',
-    'Identificar la ocupación actual del cliente.',
-    'Conocer el monto de ingresos comprobables mensualmente.',
+    {
+      objetivo: 'Ocupación actual',
+      pregunta:
+        'Para conocerte mejor y armarte algo a tu medida, cuéntame: ¿a qué te dedicas hoy en día?',
+      tecnica:
+        'Arranca aquí: es la pregunta menos sensible y abre la conversación. Si es independiente, indaga el giro de su negocio.',
+    },
+    {
+      objetivo: 'Ingresos comprobables mensuales',
+      pregunta:
+        '¿Y aproximadamente cuánto te ingresa al mes entre todo lo que generas? Te pregunto porque entre más ingreso puedas comprobar, mejor monto y tasa te consigo.',
+      tecnica:
+        'Liga el dato sensible a un beneficio directo (mejor monto/tasa). Remata con: "¿lo puedes comprobar con estados de cuenta?".',
+    },
+    {
+      objetivo: 'Fecha y monto esperados de depósito',
+      pregunta:
+        'Para dejarte todo listo a tiempo, ¿para cuándo necesitas el dinero en tu cuenta y de cuánto estaríamos hablando para cubrir lo que tienes en mente?',
+      tecnica:
+        'Dos pájaros de un tiro: detectas urgencia (para cerrar) y el monto objetivo (para la oferta). Si dice "lo antes posible", refuerza el depósito en 2 horas.',
+    },
+    {
+      objetivo: 'Créditos existentes',
+      pregunta:
+        'Para que tu pago mensual quede cómodo y no te apriete, ¿hoy traes algún otro crédito, tarjeta o financiamiento activo? No es para juzgar, es para acomodarte la mejor estructura.',
+      tecnica:
+        'El "no es para juzgar" baja la guardia. Te revela su capacidad de pago real y abre la puerta a hablar de consolidación.',
+    },
+    {
+      objetivo: 'Otras opciones con otras instituciones',
+      pregunta:
+        '¿Ya andabas viendo esta opción con algún otro banco o financiera? Lo pregunto para asegurarme de ponerte algo que de verdad valga más la pena que lo que ya tengas sobre la mesa.',
+      tecnica:
+        'Mide la competencia y la urgencia. Si dice que sí, anota la institución: te sirve para rebatir la comparación en el cierre.',
+    },
+    {
+      objetivo: 'Necesidades adicionales / ampliación',
+      pregunta:
+        'Además de lo que vas a resolver hoy, ¿hay algún otro proyecto o gasto que tengas en mente para los próximos meses? Así desde hoy te dejo perfilado el camino para una ampliación.',
+      tecnica:
+        'Cross-sell y siembra la ampliación al 3er pago puntual. Convierte una venta única en relación de largo plazo.',
+    },
   ];
 };
 
