@@ -87,10 +87,19 @@ function CategoryCard({ id, data }: { id: string; data: any }) {
   );
 }
 
-export function PostCallAnalysis() {
-  const { analysis, isAnalyzing } = useTeleprompterStore();
+interface PostCallAnalysisProps {
+  // When provided, renders the given analysis directly (e.g. from history).
+  // When omitted, falls back to the Zustand store (live analysis flow).
+  analysis?: CallAnalysis | null;
+}
 
-  if (isAnalyzing) {
+import type { CallAnalysis } from '@/lib/store';
+
+export function PostCallAnalysis({ analysis: propAnalysis }: PostCallAnalysisProps = {}) {
+  const { analysis: storeAnalysis, isAnalyzing } = useTeleprompterStore();
+  const analysis = propAnalysis !== undefined ? propAnalysis : storeAnalysis;
+
+  if (propAnalysis === undefined && isAnalyzing) {
     return (
       <div className="mt-6 bg-slate-50 border border-slate-200 rounded-xl p-8 flex flex-col items-center gap-3 text-center">
         <Loader2 className="w-7 h-7 text-indigo-500 animate-spin" />
