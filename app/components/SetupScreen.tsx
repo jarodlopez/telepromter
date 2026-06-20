@@ -1,12 +1,10 @@
 'use client';
 import React from 'react';
-import { Phone, User, Target, FileText, Settings, Sparkles } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { Phone, User, Target, FileText, Settings } from 'lucide-react';
 import { useTeleprompterStore } from '@/lib/store';
 
 export function SetupScreen() {
   const { crmData, setCrmData, setAppState, resetCallDuration, showToast } = useTeleprompterStore();
-  const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -193,22 +191,14 @@ export function SetupScreen() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
+          <div className="mt-8">
             <button
               onClick={iniciarLlamada}
-              className="flex flex-col items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl py-6 px-4 transition shadow-md"
+              className="w-full flex flex-col items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl py-6 px-4 transition shadow-md"
             >
               <Phone className="w-7 h-7" />
               <span className="text-base">Iniciar Llamada</span>
               <span className="text-xs text-indigo-300 font-normal">Script + Teleprompter en vivo</span>
-            </button>
-            <button
-              onClick={() => router.push('/analyze')}
-              className="flex flex-col items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl py-6 px-4 transition shadow-md"
-            >
-              <Sparkles className="w-7 h-7 text-indigo-400" />
-              <span className="text-base">Analizar Transcripción</span>
-              <span className="text-xs text-slate-400 font-normal">Coaching IA con transcripción de HubSpot</span>
             </button>
           </div>
         </div>
