@@ -1,5 +1,5 @@
 import {
-  collection, addDoc, query, where, orderBy,
+  collection, addDoc, query, where,
   getDocs, serverTimestamp, Timestamp,
 } from 'firebase/firestore';
 import { db } from './firebase';
@@ -65,10 +65,15 @@ export async function getAnalyses(uid: string): Promise<AnalysisRecord[]> {
   const q = query(
     collection(db, 'analyses'),
     where('asesorUid', '==', uid),
-    orderBy('timestamp', 'desc'),
   );
   const snap = await getDocs(q);
-  return snap.docs.map((doc) => ({ id: doc.id, ...doc.data() } as AnalysisRecord));
+  const docs = snap.docs.map((doc) => ({ id: doc.id, ...doc.data() } as AnalysisRecord));
+  // Sort client-side to avoid requiring a composite Firestore index.
+  return docs.sort((a, b) => {
+    const ta = a.timestamp?.toMillis?.() ?? 0;
+    const tb = b.timestamp?.toMillis?.() ?? 0;
+    return tb - ta;
+  });
 }
 
 // ─── KPI computation (pure, no network) ──────────────────────────────────────
