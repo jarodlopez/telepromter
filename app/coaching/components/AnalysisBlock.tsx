@@ -1,8 +1,8 @@
 'use client';
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import {
   Sparkles, Loader2, ClipboardPaste, User, Target,
-  CheckCircle2, RotateCcw, Save,
+  CheckCircle2, RotateCcw, Save, Mic, Upload, X, FileAudio,
 } from 'lucide-react';
 import type { User as FirebaseUser } from 'firebase/auth';
 import { useTeleprompterStore } from '@/lib/store';
@@ -50,14 +50,67 @@ export default function AnalysisBlock({ user, onSaved }: Props) {
   const { crmData, setCrmData, setAnalysis, isAnalyzing, setIsAnalyzing, showToast, analysis } =
     useTeleprompterStore();
 
-  const [rawTranscript,  setRawTranscript]  = useState('');
+  const [rawTranscript,   setRawTranscript]   = useState('');
   const [cleanTranscript, setCleanTranscript] = useState('');
-  const [localCliente,   setLocalCliente]   = useState('');
-  const [localAsesor,    setLocalAsesor]    = useState('');
-  const [localTipo,      setLocalTipo]      = useState<typeof crmData.tipoLead>('upper');
+  const [localCliente,    setLocalCliente]    = useState('');
+  const [localAsesor,     setLocalAsesor]     = useState('');
+  const [localTipo,       setLocalTipo]       = useState<typeof crmData.tipoLead>('upper');
   const [hubSpotDetected, setHubSpotDetected] = useState(false);
-  const [saving,         setSaving]         = useState(false);
-  const [savedId,        setSavedId]        = useState<string | null>(null);
+  const [saving,          setSaving]          = useState(false);
+  const [savedId,         setSavedId]         = useState<string | null>(null);
+
+  // Audio transcription state
+  const [audioFile,       setAudioFile]       = useState<File | null>(null);
+  const [isTranscribing,  setIsTranscribing]  = useState(false);
+  const [audioError,      setAudioError]      = useState('');
+  const [dragOver,        setDragOver]        = useState(false);
+  const audioInputRef = useRef<HTMLInputElement>(null);
+
+  const ACCEPTED_AUDIO = '.mp3,.m4a,.wav,.ogg,.webm,.flac,.mp4,.mpeg';
+
+  const handleAudioFile = (file: File) => {
+    setAudioError('');
+    setAudioFile(file);
+  };
+
+  const handleAudioDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragOver(false);
+    const file = e.dataTransfer.files[0];
+    if (file) handleAudioFile(file);
+  };
+
+  const transcribeAudio = async () => {
+    if (!audioFile) return;
+    setIsTranscribing(true);
+    setAudioError('');
+    try {
+      const form = new FormData();
+      form.append('audio', audioFile);
+      const res  = await fetch('/api/transcribe', { method: 'POST', body: form });
+      const data = await res.json();
+      if (!res.ok || data.error) throw new Error(data.error ?? 'Error al transcribir.');
+      if (!data.text?.trim()) throw new Error('Whisper no devolvió texto. Verifica que el audio tenga voz clara.');
+      // Populate transcript directly (not HubSpot format)
+      setRawTranscript(data.text);
+      setCleanTranscript(data.text);
+      setHubSpotDetected(false);
+      showToast('Audio transcrito correctamente.', 'success');
+    } catch (err: any) {
+      setAudioError(err?.message ?? 'Error al transcribir.');
+    } finally {
+      setIsTranscribing(false);
+    }
+  };
+
+  const clearAudio = () => {
+    setAudioFile(null);
+    setAudioError('');
+    if (audioInputRef.current) audioInputRef.current.value = '';
+  };
+
+  const formatBytes = (n: number) =>
+    n < 1024 * 1024 ? `${(n / 1024).toFixed(0)} KB` : `${(n / 1024 / 1024).toFixed(1)} MB`;
 
   const wordCount = cleanTranscript.trim() ? cleanTranscript.trim().split(/\s+/).length : 0;
 
@@ -196,12 +249,94 @@ export default function AnalysisBlock({ user, onSaved }: Props) {
         </div>
       </div>
 
-      {/* Transcript input */}
+      {/* ── Audio transcription block ──────────────────────────────────────── */}
+      <div className="bg-slate-800 rounded-2xl p-5 space-y-4">
+        <p className="text-sm font-bold text-white flex items-center gap-2">
+          <Mic className="w-4 h-4 text-indigo-400" />
+          Transcribir Audio con IA
+        </p>
+
+        {/* Drop zone */}
+        <div
+          onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+          onDragLeave={() => setDragOver(false)}
+          onDrop={handleAudioDrop}
+          onClick={() => !audioFile && audioInputRef.current?.click()}
+          className={`border-2 border-dashed rounded-xl p-6 text-center transition cursor-pointer ${
+            dragOver
+              ? 'border-indigo-400 bg-indigo-900/20'
+              : audioFile
+              ? 'border-emerald-600 bg-emerald-900/10 cursor-default'
+              : 'border-slate-600 hover:border-indigo-500 hover:bg-slate-700/30'
+          }`}
+        >
+          <input
+            ref={audioInputRef}
+            type="file"
+            accept={ACCEPTED_AUDIO}
+            className="hidden"
+            onChange={(e) => { const f = e.target.files?.[0]; if (f) handleAudioFile(f); }}
+          />
+
+          {audioFile ? (
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3 min-w-0">
+                <FileAudio className="w-8 h-8 text-emerald-400 flex-shrink-0" />
+                <div className="text-left min-w-0">
+                  <p className="text-sm font-bold text-emerald-300 truncate">{audioFile.name}</p>
+                  <p className="text-xs text-slate-400">{formatBytes(audioFile.size)}</p>
+                </div>
+              </div>
+              <button
+                onClick={(e) => { e.stopPropagation(); clearAudio(); }}
+                className="text-slate-400 hover:text-red-400 transition flex-shrink-0"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              <Upload className="w-8 h-8 text-slate-500 mx-auto" />
+              <p className="text-sm text-slate-400">
+                Arrastra el audio aquí o <span className="text-indigo-400 font-bold">selecciona archivo</span>
+              </p>
+              <p className="text-xs text-slate-600">MP3 · M4A · WAV · OGG · WebM · hasta 25 MB</p>
+            </div>
+          )}
+        </div>
+
+        {/* Error */}
+        {audioError && (
+          <p className="text-xs text-red-400 bg-red-950/30 border border-red-900/50 rounded-lg px-3 py-2">
+            {audioError}
+          </p>
+        )}
+
+        {/* Transcribe button */}
+        <button
+          onClick={transcribeAudio}
+          disabled={!audioFile || isTranscribing}
+          className="w-full flex items-center justify-center gap-2 bg-indigo-500 hover:bg-indigo-600 disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold rounded-xl py-3 transition text-sm"
+        >
+          {isTranscribing
+            ? <><Loader2 className="w-4 h-4 animate-spin" /> Transcribiendo con Whisper...</>
+            : <><Mic className="w-4 h-4" /> Transcribir Audio</>
+          }
+        </button>
+
+        {isTranscribing && (
+          <p className="text-xs text-center text-slate-500">
+            Esto puede tardar 30–60 segundos dependiendo de la duración del audio.
+          </p>
+        )}
+      </div>
+
+      {/* ── Manual transcript input ─────────────────────────────────────────── */}
       <div className="bg-slate-800 rounded-2xl p-5 space-y-4">
         <div className="flex items-center justify-between flex-wrap gap-2">
           <p className="text-sm font-bold text-white flex items-center gap-2">
             <ClipboardPaste className="w-4 h-4 text-indigo-400" />
-            Transcripción de HubSpot
+            O pega la transcripción manualmente
           </p>
           <div className="flex items-center gap-3">
             {hubSpotDetected && (
