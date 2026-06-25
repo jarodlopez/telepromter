@@ -91,11 +91,11 @@ export default function AnalysisBlock({ user, onSaved }: Props) {
       const data = await res.json();
       if (!res.ok || data.error) throw new Error(data.error ?? 'Error al transcribir.');
       if (!data.text?.trim()) throw new Error('Whisper no devolvió texto. Verifica que el audio tenga voz clara.');
-      // Populate transcript directly (not HubSpot format)
-      setRawTranscript(data.text);
+      // Use GPT-labeled transcript; rawTranscript holds the unformatted Whisper output
+      setRawTranscript(data.rawText ?? data.text);
       setCleanTranscript(data.text);
       setHubSpotDetected(false);
-      showToast('Audio transcrito correctamente.', 'success');
+      showToast('Audio transcrito y separado por hablante.', 'success');
     } catch (err: any) {
       setAudioError(err?.message ?? 'Error al transcribir.');
     } finally {
@@ -326,7 +326,7 @@ export default function AnalysisBlock({ user, onSaved }: Props) {
 
         {isTranscribing && (
           <p className="text-xs text-center text-slate-500">
-            Esto puede tardar 30–60 segundos dependiendo de la duración del audio.
+            Paso 1: Whisper transcribe el audio · Paso 2: GPT separa asesor / cliente. Puede tardar 30–90 s.
           </p>
         )}
       </div>
